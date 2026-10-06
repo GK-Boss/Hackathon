@@ -104,3 +104,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# OpenAI APIキーを含むローカル設定（コミット禁止）
+/[Aa]ssets/Konishi/Resources/OpenAISettings.asset
+/[Aa]ssets/Konishi/Resources/OpenAISettings.asset.meta

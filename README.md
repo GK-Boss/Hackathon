@@ -52,9 +52,10 @@
 
 ```text
 Assets/Konishi/Scripts/
-├── Data/
-├── GameLogic/
-└── UI/
+├── AI/          ChatGPT連携（プロンプト・通信・生成管理）
+├── Data/        問題データの型
+├── GameLogic/   Chain・スコア・出題・画面遷移
+└── UI/          各画面の表示
 ```
 
 ## UIの作成
@@ -69,6 +70,28 @@ Tools > Learning Game > Create Scene UI
 
 作成後は、Canvas、Panel、Button、TextなどをInspectorから調整できます。
 
+## AI（ChatGPT）連携のセットアップ
+
+問題文・選択肢・解説は ChatGPT（OpenAI API）で生成できます。
+APIキーが未設定でも、固定問題でそのまま遊べます。
+
+### 手順
+
+1. Unity Editorで `Tools > Learning Game > Create OpenAI Settings` を実行する
+2. 作成された `Assets/Konishi/Resources/OpenAISettings.asset` をInspectorで開く
+3. `Api Key` にOpenAIのAPIキーを貼り付ける
+4. Hierarchyの `Systems` に空のGameObjectを作り、`AIAPIClient` と `AIQuestionGenerator` を付ける
+5. `QuestionManager` の `Ai Generator` に、そのGameObjectを割り当てる
+
+`OpenAISettings.asset` はAPIキーを含むため `.gitignore` で除外しています。
+リポジトリをクローンした人は、各自で手順1〜3を行ってください。
+
+### 動作
+
+プレイヤーが問題を解いている間に、裏で次の問題を1問だけ先読み生成します。
+生成が間に合わない、通信に失敗した、内容の検証に通らなかった場合は、
+固定問題へ自動的にフォールバックするため、ゲームが止まることはありません。
+
 ## 次の作業
 
 1. Unity Scene上にUIを作成する
@@ -76,7 +99,7 @@ Tools > Learning Game > Create Scene UI
 3. 固定問題でゲームループを再生確認する
 4. UIの見た目を調整する
 5. 検証済み問題を10〜15問に増やす
-6. 必要に応じてAI APIを接続する
+6. AI生成問題の品質を実機で確認する
 
 ## 開発ルール
 

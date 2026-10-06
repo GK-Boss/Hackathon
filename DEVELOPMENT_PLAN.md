@@ -109,13 +109,17 @@
 1つのスクリプトに複数の役割を持たせない。
 
 ```text
-ChainManager       Chainだけを管理
+ChainManager        Chainだけを管理
 ScoreCalculator     スコアだけを計算
-QuestionManager     問題データだけを管理
+QuestionManager     どの問題を出すかだけを管理
 QuestionUI          問題画面だけを制御
 FeedbackUI          フィードバック画面だけを制御
 ResultUI            結果画面だけを制御
 GameFlowController  画面遷移と全体の接続だけを担当
+PromptTemplates     AIへ送るプロンプト文だけを保持
+AIAPIClient         OpenAI APIとの送受信だけを担当
+AIQuestionGenerator 生成の先読みと検証だけを担当
+AIQuestionDto       AIの応答JSONの受け取りと検証だけを担当
 ```
 
 ### UIはSceneで管理する
@@ -149,6 +153,7 @@ GameRoot
 │   ├── ChainManager
 │   ├── ScoreCalculator
 │   ├── QuestionManager
+│   ├── AIClient（AIAPIClient + AIQuestionGenerator）
 │   └── AudioManager
 └── UI
     └── LearningGameCanvas
@@ -212,19 +217,62 @@ GameRoot
 - [ ] セーブ
 - [ ] ランキング
 
-## 9. 現在地
+## 9. AI連携（2026-10-06 追加）
 
-現在は、コアループのプロトタイプと、責務分割したスクリプト構成を作成した段階。
+### 使用するAI
+
+ChatGPT（OpenAI Chat Completions API）を使用する。
+
+### 構成
+
+```text
+Assets/Konishi/Scripts/AI/
+├── OpenAISettings.cs       APIキー・モデル・タイムアウトの設定（ScriptableObject）
+├── PromptTemplates.cs      プロンプト文の組み立て
+├── AIAPIClient.cs          OpenAI APIへの送受信
+└── AIQuestionGenerator.cs  次問題の先読み生成と検証
+
+Assets/Konishi/Scripts/Data/
+└── AIQuestionDto.cs        応答JSONの受け取りと検証
+```
+
+### 動作方針
+
+- プレイヤーが回答している間に、次の問題を1問だけバックグラウンドで生成する
+- 生成が間に合わない／通信失敗／検証に通らない場合は、固定問題へフォールバックする
+- 生成に失敗しても即時に再試行せず、次の機会に別の問題を生成する
+- 検証内容は「問題文が空でない」「選択肢が規定数ある」「選択肢が重複していない」
+  「correctIndexが範囲内」「解説が空でない」の5点
+
+### APIキーの扱い
+
+`Assets/Konishi/Resources/OpenAISettings.asset` に保存し、`.gitignore` で除外する。
+Unityメニュー `Tools > Learning Game > Create OpenAI Settings` から各自が作成する。
+
+注意：現在はクライアントから直接APIを呼んでいるため、ビルドしたアプリにキーが含まれる。
+ハッカソンのデモでは許容するが、ストア公開前には中継サーバーを挟む必要がある。
+
+### 選択肢数について
+
+企画書（10/05版）は6択だが、現行のUI・固定問題・プロンプトはすべて5択で統一している。
+6択へ移行する場合は、`PromptTemplates.ChoiceCount`、`QuestionUI`、`SceneUIBuilder`、
+`QuestionManager` の固定問題を同時に変更すること。
+
+## 10. 現在地
+
+現在は、コアループのプロトタイプ、責務分割したスクリプト構成、
+およびAI問題生成（フォールバック付き）を作成した段階。
 
 次に行う作業は以下とする。
 
 1. UnityメニューからScene UIを作成する
-2. Inspectorの参照設定を確認する
+2. Inspectorの参照設定を確認する（`QuestionManager` の `Ai Generator` を含む）
 3. Unityでコアループを再生確認する
 4. UIの見た目を人間が調整する
 5. 固定問題を10〜15問に増やす
+6. AI生成問題の品質を確認し、プロンプトを調整する
 
-## 10. 関連ドキュメント
+## 11. 関連ドキュメント
 
 - [開発方針](DEVELOPMENT_POLICY.md)
 - [Unityプロジェクト](Assets/)

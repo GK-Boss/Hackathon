@@ -59,7 +59,8 @@ public class GameFlowController : MonoBehaviour
         }
 
         chainManager.AddCorrectAnswer();
-        questionManager.MoveNext();
+        // Chainを渡すのは、AI生成の難易度指定に使うため
+        questionManager.MoveNext(chainManager.CurrentChain);
         quizPanel.SetActive(false);
         feedbackUI.Show("正解！  Chain + 1", "関連ワード：" + question.relatedTerm, ShowQuestion);
         feedbackPanel.SetActive(true);
