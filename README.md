@@ -29,6 +29,16 @@
 - 完成判定
 - 現在地と次に行う作業
 
+### [BUGS.md](BUGS.md)
+
+間違えた記録です。同じ間違いを2回しないために残します。
+
+- 何が起きたか
+- **なぜそうなったか**
+- どう直したか
+
+テストが落ちたら、直す前にここへ書きます。
+
 ### 仕様書
 
 ゲームのコンセプト、Chain、スコア、AI連携、キャラクター解放などの詳細仕様をまとめた資料です。
@@ -70,6 +80,35 @@ Tools > Learning Game > Create Scene UI
 
 作成後は、Canvas、Panel、Button、TextなどをInspectorから調整できます。
 
+## テストの回し方
+
+**変更したら、次へ進む前にこれを回します。** Unityを開く必要はありません。
+
+```bash
+/Applications/Unity/Hub/Editor/6000.3.15f1/Unity.app/Contents/MacOS/Unity \
+  -runTests -batchmode -projectPath . -testPlatform EditMode \
+  -testResults /tmp/results.xml -logFile /tmp/test.log
+```
+
+結果は `/tmp/results.xml` に出ます。Unity Editor から回す場合は `Window > General > Test Runner`。
+
+テストは `Assets/Konishi/Editor/Tests/` にあります。
+
+| テスト | 見ているもの |
+|---|---|
+| `ChainManagerTests` | 正解で+1、ミスで0 |
+| `ScoreCalculatorTests` | Chainの二乗がスコアになる |
+| `QuestionManagerTests` | APIなしでも固定問題が出て、進めても尽きない |
+| `AIQuestionDtoTests` | AIの壊れた応答を弾ける |
+| `CommonSceneWiringTests` | SceneのInspector参照に空が無い |
+
+`CommonSceneWiringTests` が要です。
+Unityで一番多い「Inspectorの参照が外れていて再生した瞬間に落ちる」は、
+コンパイルが通ってしまうためコードを読んでも気づけません。これが唯一の検出手段です。
+
+**落ちたら、直す前に [BUGS.md](BUGS.md) に書いてください。**
+直してから書こうとすると、なぜそうなったかが消えます。
+
 ## AI（ChatGPT）連携のセットアップ
 
 問題文・選択肢・解説は ChatGPT（OpenAI API）で生成できます。
@@ -94,12 +133,14 @@ APIキーが未設定でも、固定問題でそのまま遊べます。
 
 ## 次の作業
 
-1. Unity Scene上にUIを作成する
-2. Inspectorの参照設定を確認する
-3. 固定問題でゲームループを再生確認する
-4. UIの見た目を調整する
-5. 検証済み問題を10〜15問に増やす
-6. AI生成問題の品質を実機で確認する
+自動テストで測れる部分は済んでいます。**次は人が触って測る番です。**
+
+1. Unityで固定問題のままコアループを1周再生する
+2. 落ちた項目を [BUGS.md](BUGS.md) に記録してから直す
+3. UIの見た目を調整する
+4. 検証済み問題を10〜15問に増やす（人が目視検証する。デモの本線）
+5. APIキーを入れてAI生成問題の品質を確認する
+6. `exe/` を現行コードで再ビルドする（担当は [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) 11章で決定）
 
 ## 開発ルール
 
