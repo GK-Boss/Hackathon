@@ -216,6 +216,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+--- !u!114 &30984489 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7169398482195805729, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+  m_PrefabInstance: {fileID: 30984488}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
 --- !u!1 &144326365
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,6 +569,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+--- !u!114 &587470908 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7169398482195805729, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+  m_PrefabInstance: {fileID: 587470907}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
 --- !u!224 &685429124 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6037950653512170694, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
@@ -802,6 +824,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+--- !u!114 &829497505 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7169398482195805729, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+  m_PrefabInstance: {fileID: 829497504}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
 --- !u!1001 &966040218
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -899,6 +932,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+--- !u!114 &966040219 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7169398482195805729, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+  m_PrefabInstance: {fileID: 966040218}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
 --- !u!224 &1056926228 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6037950653512170694, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
@@ -1248,6 +1292,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+--- !u!114 &1545975417 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7169398482195805729, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+  m_PrefabInstance: {fileID: 1545975416}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
 --- !u!1 &1692226064
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,6 +1313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1692226065}
   - component: {fileID: 1692226066}
+  - component: {fileID: 1692226067}
   m_Layer: 5
   m_Name: ChoiceButtons
   m_TagString: Untagged
@@ -1314,6 +1370,25 @@ MonoBehaviour:
   m_Spacing: {x: 50, y: 100}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!114 &1692226067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692226064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2edd6a3e2af7d64a82476e4d4ed9250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButtons
+  choiceButtons:
+  - {fileID: 1891576094}
+  - {fileID: 30984489}
+  - {fileID: 966040219}
+  - {fileID: 587470908}
+  - {fileID: 1545975417}
+  - {fileID: 829497505}
 --- !u!1 &1847866974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,6 +1615,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+--- !u!114 &1891576094 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7169398482195805729, guid: 3985303febcee81459c4ee7955bf29a3, type: 3}
+  m_PrefabInstance: {fileID: 1891576093}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
 --- !u!1 &1909869825
 GameObject:
   m_ObjectHideFlags: 0
