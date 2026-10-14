@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6361641715840083356}
   - component: {fileID: 4055995089844360047}
   m_Layer: 5
-  m_Name: Visual
+  m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -191,8 +191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98460ae73246f494994460e0ceb453c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChoiceButton
-  visual: {fileID: 5205338207803113375}
-  textTransform: {fileID: 6461291467901717513}
+  image: {fileID: 4055995089844360047}
+  text: {fileID: 3959906317158289411}
   textOffset: {x: 75, y: 0}
   firstOffset: {x: 0, y: 30}
   firstMoveCurve:
