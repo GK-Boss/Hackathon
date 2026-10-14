@@ -8,6 +8,7 @@ public class GameFlowController : MonoBehaviour
     [SerializeField] private QuestionManager questionManager;
 
     [Header("Scene UI")]
+    [SerializeField] private GameObject modeSelectPanel;
     [SerializeField] private GameObject subjectSelectPanel;
     [SerializeField] private GameObject quizPanel;
     [SerializeField] private GameObject feedbackPanel;
@@ -18,7 +19,7 @@ public class GameFlowController : MonoBehaviour
 
     private string selectedSubject;
 
-    private void Start() => ShowSubjectSelect();
+    private void Start() => ShowModeSelectPanel();
 
     public void SelectUnity() => StartGame("Unity");
     public void SelectGeneral() => StartGame("一般教養");
@@ -32,7 +33,16 @@ public class GameFlowController : MonoBehaviour
         ShowQuestion();
     }
 
-    private void ShowSubjectSelect()
+    #region ShowPanel
+    public void ShowModeSelectPanel()
+    {
+        modeSelectPanel.SetActive(true);
+        subjectSelectPanel.SetActive(false);
+        quizPanel.SetActive(false);
+        feedbackPanel.SetActive(false);
+        resultPanel.SetActive(false);
+    }
+    public void ShowSubjectSelect()
     {
         subjectSelectPanel.SetActive(true);
         quizPanel.SetActive(false);
@@ -40,7 +50,7 @@ public class GameFlowController : MonoBehaviour
         resultPanel.SetActive(false);
     }
 
-    private void ShowQuestion()
+    public void ShowQuestion()
     {
         subjectSelectPanel.SetActive(false);
         quizPanel.SetActive(true);
@@ -49,6 +59,7 @@ public class GameFlowController : MonoBehaviour
         questionUI.Show(selectedSubject, questionManager.Current, chainManager.CurrentChain, Answer, AdmitUnknown);
     }
 
+    #endregion
     private void Answer(int choice)
     {
         var question = questionManager.Current;
