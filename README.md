@@ -124,7 +124,9 @@ QuestionData boss = await questionManager.GenerateBossQuestion();
 - `choices` は**必ず6個**、各**20文字以内**。長い文が必要なときは、
   `questionText` に「A. 〜 / B. 〜」と書き、`choices` は `["A","B","C","D","E","F"]` にします
 - `relatedTerms` は**最低1つ**。関連度は1〜5で、5がこの問題の中心です。次の問題はここから選ばれます
-- `verified` は、人が目視で正しさを確認したら `true` に。デモで使うのは `true` のものだけです
+- `verified` は、人が目視で正しさを確認したら `true` に。**デモで使うのは `true` のものだけです**
+  - `false` のまま置いておけます（下書き）。`QuestionManager` の `Verified Only` をONにすると出題から外れます
+  - **いま薬理学の6問は `verified: false` です。** AIが書いた下書きで、人の確認がまだです
 - 編集したらテストを回してください。形式が壊れていれば `LocalJsonQuestionRepositoryTests` が教えてくれます
 
 AIが生成した問題は `Application.persistentDataPath/questions.json` に別で保存されます（gitには入りません）。

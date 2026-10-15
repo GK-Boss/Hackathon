@@ -5,13 +5,29 @@
             "subject": "Unity",
             "difficulty": 1,
             "questionText": "Unityで2D画像を表示するコンポーネントは？",
-            "choices": ["SpriteRenderer", "AudioSource", "Light", "Animator", "Camera", "Rigidbody"],
+            "choices": [
+                "SpriteRenderer",
+                "AudioSource",
+                "Light",
+                "Animator",
+                "Camera",
+                "Rigidbody"
+            ],
             "correctIndex": 0,
             "explanation": "SpriteRendererはSpriteアセットを画面に描画します。2Dゲームの見た目は基本これで作ります。",
             "relatedTerms": [
-                { "term": "SpriteRenderer", "relevance": 5 },
-                { "term": "Sprite", "relevance": 4 },
-                { "term": "コンポーネント", "relevance": 2 }
+                {
+                    "term": "SpriteRenderer",
+                    "relevance": 5
+                },
+                {
+                    "term": "Sprite",
+                    "relevance": 4
+                },
+                {
+                    "term": "コンポーネント",
+                    "relevance": 2
+                }
             ],
             "verified": true
         },
@@ -20,14 +36,33 @@
             "subject": "Unity",
             "difficulty": 1,
             "questionText": "ゲーム開始時に一度だけ呼ばれるUnityメソッドは？",
-            "choices": ["Start", "Update", "LateUpdate", "FixedUpdate", "OnGUI", "OnDestroy"],
+            "choices": [
+                "Start",
+                "Update",
+                "LateUpdate",
+                "FixedUpdate",
+                "OnGUI",
+                "OnDestroy"
+            ],
             "correctIndex": 0,
             "explanation": "Startは有効なコンポーネントの初期化時に一度だけ呼ばれます。毎フレーム呼ばれるUpdateとは役割が違います。",
             "relatedTerms": [
-                { "term": "ライフサイクル", "relevance": 5 },
-                { "term": "Start", "relevance": 5 },
-                { "term": "Update", "relevance": 3 },
-                { "term": "MonoBehaviour", "relevance": 2 }
+                {
+                    "term": "ライフサイクル",
+                    "relevance": 5
+                },
+                {
+                    "term": "Start",
+                    "relevance": 5
+                },
+                {
+                    "term": "Update",
+                    "relevance": 3
+                },
+                {
+                    "term": "MonoBehaviour",
+                    "relevance": 2
+                }
             ],
             "verified": true
         },
@@ -36,13 +71,29 @@
             "subject": "Unity",
             "difficulty": 1,
             "questionText": "UIボタンのクリック処理を登録するイベントは？",
-            "choices": ["onClick", "onDraw", "onMove", "onLoad", "onTick", "onHover"],
+            "choices": [
+                "onClick",
+                "onDraw",
+                "onMove",
+                "onLoad",
+                "onTick",
+                "onHover"
+            ],
             "correctIndex": 0,
             "explanation": "Button.onClickにリスナーを登録すると、クリック時に処理を呼べます。AddListenerで追加します。",
             "relatedTerms": [
-                { "term": "UIイベント", "relevance": 5 },
-                { "term": "Button", "relevance": 4 },
-                { "term": "uGUI", "relevance": 2 }
+                {
+                    "term": "UIイベント",
+                    "relevance": 5
+                },
+                {
+                    "term": "Button",
+                    "relevance": 4
+                },
+                {
+                    "term": "uGUI",
+                    "relevance": 2
+                }
             ],
             "verified": true
         },
@@ -51,14 +102,33 @@
             "subject": "Unity",
             "difficulty": 2,
             "questionText": "2D物理演算で質量や速度を管理するコンポーネントは？",
-            "choices": ["Rigidbody2D", "Rigidbody", "PhysicsCamera", "ColliderUI", "ForceManager", "Transform"],
+            "choices": [
+                "Rigidbody2D",
+                "Rigidbody",
+                "PhysicsCamera",
+                "ColliderUI",
+                "ForceManager",
+                "Transform"
+            ],
             "correctIndex": 0,
             "explanation": "Rigidbody2Dは2D物理演算の質量や速度を管理します。3D用のRigidbodyとは別のコンポーネントです。",
             "relatedTerms": [
-                { "term": "Rigidbody2D", "relevance": 5 },
-                { "term": "2D物理", "relevance": 4 },
-                { "term": "Collider2D", "relevance": 3 },
-                { "term": "コンポーネント", "relevance": 1 }
+                {
+                    "term": "Rigidbody2D",
+                    "relevance": 5
+                },
+                {
+                    "term": "2D物理",
+                    "relevance": 4
+                },
+                {
+                    "term": "Collider2D",
+                    "relevance": 3
+                },
+                {
+                    "term": "コンポーネント",
+                    "relevance": 1
+                }
             ],
             "verified": true
         },
@@ -67,13 +137,29 @@
             "subject": "一般教養",
             "difficulty": 1,
             "questionText": "水が海面から気体になって大気へ移る現象は？",
-            "choices": ["蒸発", "凝固", "融解", "沈殿", "燃焼", "昇華"],
+            "choices": [
+                "蒸発",
+                "凝固",
+                "融解",
+                "沈殿",
+                "燃焼",
+                "昇華"
+            ],
             "correctIndex": 0,
             "explanation": "蒸発は液体が気体へ変化する現象です。海面から蒸発した水蒸気が上空で冷えて雲になります。",
             "relatedTerms": [
-                { "term": "水循環", "relevance": 5 },
-                { "term": "状態変化", "relevance": 4 },
-                { "term": "気象", "relevance": 2 }
+                {
+                    "term": "水循環",
+                    "relevance": 5
+                },
+                {
+                    "term": "状態変化",
+                    "relevance": 4
+                },
+                {
+                    "term": "気象",
+                    "relevance": 2
+                }
             ],
             "verified": true
         },
@@ -82,13 +168,29 @@
             "subject": "一般教養",
             "difficulty": 1,
             "questionText": "日本の国鳥は？",
-            "choices": ["キジ", "ツル", "ハト", "カラス", "ワシ", "トキ"],
+            "choices": [
+                "キジ",
+                "ツル",
+                "ハト",
+                "カラス",
+                "ワシ",
+                "トキ"
+            ],
             "correctIndex": 0,
             "explanation": "キジは日本の国鳥です。1947年に日本鳥学会によって選定されました。",
             "relatedTerms": [
-                { "term": "日本文化", "relevance": 5 },
-                { "term": "鳥類", "relevance": 3 },
-                { "term": "国のシンボル", "relevance": 2 }
+                {
+                    "term": "日本文化",
+                    "relevance": 5
+                },
+                {
+                    "term": "鳥類",
+                    "relevance": 3
+                },
+                {
+                    "term": "国のシンボル",
+                    "relevance": 2
+                }
             ],
             "verified": true
         },
@@ -97,15 +199,241 @@
             "subject": "一般教養",
             "difficulty": 1,
             "questionText": "光合成で植物が空気中から取り込む気体は？",
-            "choices": ["二酸化炭素", "酸素", "窒素", "水素", "ヘリウム", "メタン"],
+            "choices": [
+                "二酸化炭素",
+                "酸素",
+                "窒素",
+                "水素",
+                "ヘリウム",
+                "メタン"
+            ],
             "correctIndex": 0,
             "explanation": "植物は二酸化炭素と水から光のエネルギーを使って養分を作ります。このとき酸素を放出します。",
             "relatedTerms": [
-                { "term": "光合成", "relevance": 5 },
-                { "term": "二酸化炭素", "relevance": 4 },
-                { "term": "生物", "relevance": 2 }
+                {
+                    "term": "光合成",
+                    "relevance": 5
+                },
+                {
+                    "term": "二酸化炭素",
+                    "relevance": 4
+                },
+                {
+                    "term": "生物",
+                    "relevance": 2
+                }
             ],
             "verified": true
+        },
+        {
+            "id": "pharm-001",
+            "subject": "薬理学",
+            "difficulty": 1,
+            "questionText": "交感神経の節後線維が主に放出する神経伝達物質は？",
+            "choices": [
+                "ノルアドレナリン",
+                "アセチルコリン",
+                "GABA",
+                "グルタミン酸",
+                "グリシン",
+                "ヒスタミン"
+            ],
+            "correctIndex": 0,
+            "explanation": "交感神経の節後線維はノルアドレナリンを放出します。節前線維はアセチルコリンを使う点が対になります。",
+            "relatedTerms": [
+                {
+                    "term": "ノルアドレナリン",
+                    "relevance": 5
+                },
+                {
+                    "term": "交感神経",
+                    "relevance": 5
+                },
+                {
+                    "term": "神経伝達物質",
+                    "relevance": 3
+                },
+                {
+                    "term": "自律神経",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "pharm-002",
+            "subject": "薬理学",
+            "difficulty": 1,
+            "questionText": "副交感神経の節後線維が放出する神経伝達物質は？",
+            "choices": [
+                "アセチルコリン",
+                "ノルアドレナリン",
+                "アドレナリン",
+                "ドパミン",
+                "セロトニン",
+                "ヒスタミン"
+            ],
+            "correctIndex": 0,
+            "explanation": "副交感神経は節前・節後ともにアセチルコリンを放出します。受け手はムスカリン受容体です。",
+            "relatedTerms": [
+                {
+                    "term": "アセチルコリン",
+                    "relevance": 5
+                },
+                {
+                    "term": "副交感神経",
+                    "relevance": 5
+                },
+                {
+                    "term": "ムスカリン受容体",
+                    "relevance": 3
+                },
+                {
+                    "term": "自律神経",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "pharm-003",
+            "subject": "薬理学",
+            "difficulty": 1,
+            "questionText": "β1受容体が最も多く分布している臓器は？",
+            "choices": [
+                "心臓",
+                "気管支",
+                "肝臓",
+                "胃",
+                "皮膚",
+                "膵臓"
+            ],
+            "correctIndex": 0,
+            "explanation": "β1受容体は主に心臓に分布し、刺激すると心拍数と収縮力が上がります。気管支に多いのはβ2受容体です。",
+            "relatedTerms": [
+                {
+                    "term": "β1受容体",
+                    "relevance": 5
+                },
+                {
+                    "term": "心臓",
+                    "relevance": 4
+                },
+                {
+                    "term": "アドレナリン受容体",
+                    "relevance": 3
+                },
+                {
+                    "term": "受容体の分布",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "pharm-004",
+            "subject": "薬理学",
+            "difficulty": 2,
+            "questionText": "β2受容体を刺激したときの気管支の反応は？",
+            "choices": [
+                "拡張する",
+                "収縮する",
+                "変化しない",
+                "炎症を起こす",
+                "分泌が止まる",
+                "線毛が止まる"
+            ],
+            "correctIndex": 0,
+            "explanation": "β2受容体は気管支平滑筋に多く、刺激すると弛緩して気管支が拡張します。喘息治療薬の作用点です。",
+            "relatedTerms": [
+                {
+                    "term": "β2受容体",
+                    "relevance": 5
+                },
+                {
+                    "term": "気管支拡張",
+                    "relevance": 4
+                },
+                {
+                    "term": "喘息",
+                    "relevance": 3
+                },
+                {
+                    "term": "平滑筋",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "pharm-005",
+            "subject": "薬理学",
+            "difficulty": 2,
+            "questionText": "非選択的β遮断薬が喘息患者に注意を要する理由に関わる受容体は？",
+            "choices": [
+                "β2受容体",
+                "β1受容体",
+                "α1受容体",
+                "H2受容体",
+                "D2受容体",
+                "N受容体"
+            ],
+            "correctIndex": 0,
+            "explanation": "非選択的β遮断薬は気管支のβ2受容体も遮断するため、気管支が収縮しうる点が問題になります。",
+            "relatedTerms": [
+                {
+                    "term": "β遮断薬",
+                    "relevance": 5
+                },
+                {
+                    "term": "β2受容体",
+                    "relevance": 5
+                },
+                {
+                    "term": "喘息",
+                    "relevance": 4
+                },
+                {
+                    "term": "選択性",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "pharm-006",
+            "subject": "薬理学",
+            "difficulty": 2,
+            "questionText": "α1受容体を刺激したときに起こる主な作用は？",
+            "choices": [
+                "血管収縮",
+                "血管拡張",
+                "心拍数低下",
+                "気管支拡張",
+                "唾液分泌増加",
+                "腸管運動亢進"
+            ],
+            "correctIndex": 0,
+            "explanation": "α1受容体は血管平滑筋に分布し、刺激すると血管が収縮して血圧が上がります。",
+            "relatedTerms": [
+                {
+                    "term": "α1受容体",
+                    "relevance": 5
+                },
+                {
+                    "term": "血管収縮",
+                    "relevance": 4
+                },
+                {
+                    "term": "血圧",
+                    "relevance": 3
+                },
+                {
+                    "term": "アドレナリン受容体",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
         }
     ]
 }

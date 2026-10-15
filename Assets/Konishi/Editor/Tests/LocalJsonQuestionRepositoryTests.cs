@@ -180,12 +180,37 @@ public class LocalJsonQuestionRepositoryTests
 
         foreach (var question in repository.All)
         {
-            Assert.IsTrue(question.verified, "種データは検証済みにしてください: " + question.questionText);
             Assert.AreEqual(QuestionRequest.DefaultChoiceCount, question.choices.Length,
                 "種データが6択になっていません: " + question.questionText);
             Assert.IsTrue(AIQuestionValidator.Validate(question, QuestionRequest.DefaultChoiceCount, out string reason),
                 "種データが検証に通りません: " + question.questionText + " / " + reason);
         }
+    }
+
+    [Test]
+    public void デモに出せる検証済みの問題が1問以上ある()
+    {
+        // Tomo注: 種データには「人がまだ見ていない下書き」(verified: false) も置けます。
+        //         デモは verifiedOnly で回すので、ここが0になるとデモで1問も出せません。
+        repository.LoadSeed();
+
+        var verified = repository.GetQuestionsBySubjectAsync(null, true).GetAwaiter().GetResult();
+        Assert.Greater(verified.Count, 0, "検証済みの問題が1問もありません。デモで出題できません。");
+    }
+
+    [Test]
+    public void 検証済みで絞ると未検証の下書きが外れる()
+    {
+        repository.LoadSeed();
+
+        var all = repository.GetQuestionsBySubjectAsync(null).GetAwaiter().GetResult();
+        var verified = repository.GetQuestionsBySubjectAsync(null, true).GetAwaiter().GetResult();
+
+        foreach (var question in verified)
+        {
+            Assert.IsTrue(question.verified, "検証済みフィルタが効いていません: " + question.questionText);
+        }
+        Assert.LessOrEqual(verified.Count, all.Count);
     }
 
     [Test]
