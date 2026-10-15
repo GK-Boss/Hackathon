@@ -59,10 +59,38 @@ public static class QuestionSystemSetup
             AssignMissingPanels(flow);
         }
 
+        RemoveMissingScripts();
+
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
 
         Debug.Log("[Question] セットアップが完了しました。接続先の設定は AIClientSettings で行ってください。");
+    }
+
+    /// <summary>
+    /// スクリプトを消したあとに残る「Missing (Mono Script)」コンポーネントを取り除く。
+    ///
+    /// Tomo注: クラス名を変えたりファイルを消したりすると、Sceneに壊れたコンポーネントが残ります。
+    ///         動作には影響しませんが、再生のたびにConsoleへ
+    ///         「The referenced script on this Behaviour is missing!」が出続けます。
+    ///         放っておくと本物の警告が埋もれるので、ここで掃除します。
+    /// </summary>
+    private static void RemoveMissingScripts()
+    {
+        int removedTotal = 0;
+
+        foreach (var transform in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            var target = transform.gameObject;
+            int count = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(target);
+            if (count == 0) continue;
+
+            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(target);
+            removedTotal += count;
+            Debug.Log("[Question] " + target.name + " から壊れたコンポーネントを" + count + "件取り除きました。");
+        }
+
+        if (removedTotal == 0) Debug.Log("[Question] 壊れたコンポーネントはありませんでした。");
     }
 
     /// <summary>

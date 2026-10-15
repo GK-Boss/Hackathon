@@ -17,6 +17,9 @@
 | 2026-10-15 | Scene UIを自動再生成しようとして、手で組み替えられたUIを壊しかけた | `SceneUIBuilder` はCanvasを丸ごと作り直す。Sceneには `AnswerButtons` という手作りの親オブジェクトがあり、ボタンがグループ化されていた。再生成の想定と実物がずれていた | 再生成をやめ、足りないボタンだけ複製する `Match Choice Buttons To Spec` を作った。batchmodeでは未保存のまま終了していたため実害なし | 解決 |
 | 2026-10-15 | `QuestionManager` が `Task.Result` でリポジトリを待っていた | ローカル実装は同期で返るので動いていたが、サーバー実装に差し替えた瞬間にメインスレッドでデッドロックする書き方だった | 出題候補を手元にキャッシュする方式に変更し、`.Result` を全廃した | 解決 |
 | 2026-10-15 | 再生すると `GameFlowController.Start()` で NullReferenceException になる状態だった | `modeSelectPanel` のフィールドは追加されていたが、Sceneで未割り当てだった。`Start()` が `modeSelectPanel.SetActive(true)` を呼ぶので、起動直後に必ず落ちる。コンパイルは通るため気づけない | `Setup Question System` が、空のパネル参照を同名のGameObjectで自動で埋めるようにした。`CommonSceneWiringTests` が検出 | 解決 |
+| 2026-10-15 | 再生するたびにConsoleへ「The referenced script (Unknown) on this Behaviour is missing!」が出ていた | 旧 `QuestionManager.cs` を削除したとき、Sceneの QuestionManager オブジェクトに壊れたコンポーネントが1件残った。動作には影響しないが、放っておくと本物の警告が埋もれる | `Setup Question System` が Missing コンポーネントを取り除くようにした。実機で再生して警告が消えたことを確認済み | 解決 |
+| 2026-10-15 | 分野選択に進んでも、タイトル画面が後ろに残ったまま重なって表示される | `GameFlowController.ShowSubjectSelect()` が `modeSelectPanel` を非表示にしていない。`ShowQuestion()` も同様 | 未対応（Knightさんの画面設計に関わるため確認待ち） | 未解決 |
+| 2026-10-15 | 分野ボタンを押してもゲームが始まらない | `SubjectButton.cs` は分野名を保持するだけで、`GameFlowController` を呼び出していない。分野一覧をScroll Viewで動的生成する作りへの移行途中 | 未対応（Knightさんの作業中） | 未解決 |
 
 ---
 
