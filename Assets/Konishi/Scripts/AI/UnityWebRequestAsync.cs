@@ -15,15 +15,23 @@ public static class UnityWebRequestAsync
         var completion = new TaskCompletionSource<UnityWebRequest>();
         var operation = request.SendWebRequest();
 
-        // すでに終わっている場合もあるので、completed を使って一度だけ結果を渡す
-        operation.completed += _ => completion.TrySetResult(request);
+        // キャンセル登録は使い終わったら必ず解放する。放置すると
+        // CancellationTokenSource が生きている間ずっと溜まり続ける。
+        CancellationTokenRegistration registration = default;
+
+        operation.completed += _ =>
+        {
+            registration.Dispose();
+            completion.TrySetResult(request);
+        };
 
         if (cancellationToken.CanBeCanceled)
         {
-            cancellationToken.Register(() =>
+            registration = cancellationToken.Register(() =>
             {
                 if (completion.Task.IsCompleted) return;
 
+                // 通信を打ち切る。応答は捨てる。
                 request.Abort();
                 completion.TrySetResult(request);
             });

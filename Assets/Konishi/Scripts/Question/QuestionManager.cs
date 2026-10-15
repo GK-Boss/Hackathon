@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -33,6 +35,9 @@ public class QuestionManager : MonoBehaviour
     [Tooltip("生成の成否をConsoleに出す。デモ前の確認用。")]
     [SerializeField] private bool verboseLog = true;
 
+    [Tooltip("1回の攻略でAIに作らせる問題数の上限。APIの使いすぎを防ぐ。0で無制限。")]
+    [SerializeField] private int maxGenerationsPerRun = 20;
+
     // ---- 内部の部品。ゲーム側には見せない ----
     private IQuestionRepository repository;
     private QuestionSelector selector;
@@ -51,6 +56,15 @@ public class QuestionManager : MonoBehaviour
     private string activeSubject;
     private bool initialized;
 
+    /// 攻略を抜けたら生成を打ち切るためのトークン。再生停止時にも使う。
+    private CancellationTokenSource runCancellation;
+
+    /// この攻略でAIに作らせた数。上限の判定に使う。
+    private int generatedThisRun;
+
+    /// 出題候補の読み込みが終わったか。
+    private bool candidatesLoaded;
+
     /// 出題候補の手元のコピー。GetNextQuestion は通信を待てないので、ここから選ぶ。
     private List<QuestionData> candidates = new List<QuestionData>();
 
@@ -59,6 +73,15 @@ public class QuestionManager : MonoBehaviour
 
     /// この攻略で出題した問題数。
     public int AskedCount => usedIds.Count;
+
+    /// <summary>
+    /// 出題候補の読み込みが終わり、GetNextQuestion が問題を返せる状態か。
+    ///
+    /// Tomo注: ローカル実装では StartRun から戻った時点で必ず true です。
+    ///         サーバー実装に差し替えたときだけ、一瞬 false になります。
+    ///         そのときは「読み込み中」を出すなどして、GetNextQuestion を待ってください。
+    /// </summary>
+    public bool IsReady => candidatesLoaded;
 
     /// そのプレイ中に触れた知識（語 → 回数）。結果画面などで見せたいとき用。
     public Dictionary<string, int> KnowledgeCounts => knowledgeTracker.GetKnowledgeCounts();
@@ -101,8 +124,7 @@ public class QuestionManager : MonoBehaviour
 
         initialized = true;
 
-        // ローカル実装は同期で読み終わるので、ここで待たずに初期化だけ走らせる
-        _ = this.repository.InitializeAsync();
+        RunInBackground(this.repository.InitializeAsync(), "問題データの初期化");
     }
 
     // ==================================================================
@@ -114,14 +136,56 @@ public class QuestionManager : MonoBehaviour
     {
         Initialize();
 
+        // 前の攻略の生成が走っていれば打ち切る（結果が混ざらないように）
+        CancelRunGeneration();
+        runCancellation = new CancellationTokenSource();
+
         activeSubject = subject;
         usedIds.Clear();
         knowledgeTracker.Clear();
         pregenerated = null;
         Current = null;
+        generatedThisRun = 0;
+        candidatesLoaded = false;
+        candidates = new List<QuestionData>();
 
-        // ローカル実装では待たずに終わる。サーバー版にしたときはここだけが通信待ちになる。
-        LoadCandidatesAsync().GetAwaiter().GetResult();
+        // Tomo注: ここで待たないこと。待つとサーバー実装にしたときに画面が固まります。
+        //         ローカル実装は同期で終わるので、この行を抜けた時点で候補は揃っています。
+        RunInBackground(LoadCandidatesAsync(), "出題候補の読み込み");
+    }
+
+    private void OnDisable() => CancelRunGeneration();
+
+    /// 走っている生成を打ち切る。再生停止や分野の切り替えで呼ぶ。
+    private void CancelRunGeneration()
+    {
+        if (runCancellation == null) return;
+
+        runCancellation.Cancel();
+        runCancellation.Dispose();
+        runCancellation = null;
+    }
+
+    /// <summary>
+    /// 待たない処理を投げる。例外を握りつぶさず、必ずConsoleに出す。
+    ///
+    /// Tomo注: async の結果を捨てると、中で落ちても何も表示されません。
+    ///         原因不明の「生成されない」を防ぐため、ここで必ず拾います。
+    /// </summary>
+    private static async void RunInBackground(Task task, string label)
+    {
+        try
+        {
+            await task;
+        }
+        catch (OperationCanceledException)
+        {
+            // 攻略を抜けたときの打ち切り。異常ではない。
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("[Question] " + label + "で例外が出ました: " + e.Message);
+        }
     }
 
     /// <summary>
@@ -190,7 +254,8 @@ public class QuestionManager : MonoBehaviour
         var request = QuestionRequest.ForBoss(activeSubject, counts);
         request.avoidQuestions = AskedQuestionTexts();
 
-        var boss = await generator.GenerateAsync(request, await CollectExistingKeys());
+        var token = runCancellation?.Token ?? CancellationToken.None;
+        var boss = await generator.GenerateAsync(request, await CollectExistingKeys(), token);
         if (boss == null) return null;
 
         // 企画書どおり、使う・使わないにかかわらず保存する
@@ -257,6 +322,7 @@ public class QuestionManager : MonoBehaviour
         }
 
         candidates = list;
+        candidatesLoaded = true;
     }
 
     /// 現在の問題から、関連度で重み付けして関連語を1つ選ぶ。
@@ -276,12 +342,24 @@ public class QuestionManager : MonoBehaviour
     {
         if (!useGeneratedQuestions || isGenerating || pregenerated != null) return;
         if (generator == null || !generator.IsAvailable) return;
+        if (runCancellation == null) return;
+
+        // APIの使いすぎを防ぐ上限。Chainが伸び続けても青天井にしない。
+        if (maxGenerationsPerRun > 0 && generatedThisRun >= maxGenerationsPerRun)
+        {
+            if (verboseLog && generatedThisRun == maxGenerationsPerRun)
+            {
+                Debug.Log("[Question] この攻略の生成上限(" + maxGenerationsPerRun + ")に達したので、以降は既存問題だけで進めます。");
+                generatedThisRun++;   // このログを1回だけ出すため
+            }
+            return;
+        }
 
         isGenerating = true;
-        _ = GenerateInBackground(ChooseTermFromCurrent());
+        RunInBackground(GenerateInBackground(ChooseTermFromCurrent(), runCancellation.Token), "問題の生成");
     }
 
-    private async Task GenerateInBackground(string relatedTerm)
+    private async Task GenerateInBackground(string relatedTerm, CancellationToken cancellationToken)
     {
         try
         {
@@ -300,8 +378,13 @@ public class QuestionManager : MonoBehaviour
                 avoidQuestions = AskedQuestionTexts()
             };
 
-            var generated = await generator.GenerateAsync(request, await CollectExistingKeys());
+            generatedThisRun++;
+
+            var generated = await generator.GenerateAsync(request, await CollectExistingKeys(), cancellationToken);
             if (generated == null) return;   // 失敗。次の機会に別の生成を行う
+
+            // 攻略を抜けたあとに届いた結果は使わない
+            if (cancellationToken.IsCancellationRequested) return;
 
             // 企画書どおり、今回使わなくてもDBに保存する
             await repository.SaveQuestionAsync(generated);

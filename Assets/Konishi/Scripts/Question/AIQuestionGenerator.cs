@@ -88,6 +88,9 @@ public class AIQuestionGenerator
         }
 
         // ---- 修正は1回だけ ----
+        // 攻略を抜けていたら、ここで課金が発生する2回目を投げない
+        if (cancellationToken.IsCancellationRequested) return null;
+
         if (verboseLog) Debug.Log("[Question] 検証に落ちたので1回だけ修正を依頼します: " + firstReason);
 
         string repaired = await client.CompleteAsync(

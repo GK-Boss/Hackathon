@@ -20,6 +20,8 @@
 | 2026-10-15 | 再生するたびにConsoleへ「The referenced script (Unknown) on this Behaviour is missing!」が出ていた | 旧 `QuestionManager.cs` を削除したとき、Sceneの QuestionManager オブジェクトに壊れたコンポーネントが1件残った。動作には影響しないが、放っておくと本物の警告が埋もれる | `Setup Question System` が Missing コンポーネントを取り除くようにした。実機で再生して警告が消えたことを確認済み | 解決 |
 | 2026-10-15 | 分野選択に進んでも、タイトル画面が後ろに残ったまま重なって表示される | `GameFlowController.ShowSubjectSelect()` が `modeSelectPanel` を非表示にしていない。`ShowQuestion()` も同様 | 未対応（Knightさんの画面設計に関わるため確認待ち） | 未解決 |
 | 2026-10-15 | 分野ボタンを押してもゲームが始まらない | `SubjectButton.cs` は分野名を保持するだけで、`GameFlowController` を呼び出していない。分野一覧をScroll Viewで動的生成する作りへの移行途中 | 未対応（Knightさんの作業中） | 未解決 |
+| 2026-10-15 | 壊れたコンポーネントを除去したコミット(364ebba)が、`GameFlowController.questionManager` の参照を null にしていた | Missing スクリプトを取り除くと、同じGameObject上の生きた参照まで外れた。**テストを回さずにコミットしたため気づけなかった**（Unityを開いていてbatchmodeが使えず、シーンのGUID検査と再生だけで済ませた。再生は出題画面まで到達しないので露見しなかった） | `Setup Question System` で再割り当て。Test Runnerで141本すべて緑を確認してからコミットした | 解決 |
+| 2026-10-15 | AI生成コードに、通信関連の不具合が4件あった | ①`StartRun` が `GetAwaiter().GetResult()` でブロックしており、サーバー実装にするとメインスレッドが固まる（BUGS.mdに「解決」と書いたが実際は未解決だった） ②投げっぱなしの非同期処理に catch が無く、例外が消える ③攻略を抜けても生成が走り続ける ④生成回数に上限が無く、API料金が青天井 | ①非ブロッキング化し `IsReady` を公開 ②`RunInBackground` で必ずログ ③`CancellationToken` で打ち切り ④`maxGenerationsPerRun`(既定20)で上限 | 解決 |
 
 ---
 

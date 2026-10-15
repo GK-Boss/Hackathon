@@ -134,6 +134,27 @@ public class QuestionManagerTests
         Assert.IsNotNull(manager.GetNextQuestion());
     }
 
+    [Test]
+    public void StartRunから戻った時点で出題できる状態になっている()
+    {
+        // Tomo注: 読み込みの待ち方を変えたときに、ここが最初に落ちます。
+        //         ローカル実装は同期で終わるので、待たなくても候補が揃っているはず。
+        manager.StartRun("Unity");
+
+        Assert.IsTrue(manager.IsReady, "出題候補の読み込みが終わっていません。");
+        Assert.IsNotNull(manager.GetNextQuestion());
+    }
+
+    [Test]
+    public void 攻略を何度も始め直しても問題が取得できる()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            manager.StartRun("Unity");
+            Assert.IsNotNull(manager.GetNextQuestion(), (i + 1) + "回目の攻略で問題が出ませんでした。");
+        }
+    }
+
     // ---- 知識の記録 ----
 
     [Test]
