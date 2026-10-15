@@ -56,12 +56,65 @@ public static class QuestionSystemSetup
         else
         {
             AssignField(flow, "questionManager", manager);
+            AssignMissingPanels(flow);
         }
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
 
         Debug.Log("[Question] セットアップが完了しました。接続先の設定は AIClientSettings で行ってください。");
+    }
+
+    /// <summary>
+    /// GameFlowController の空になっているパネル参照を、同じ名前のGameObjectで埋める。
+    ///
+    /// Tomo注: パネルを足したときにInspectorでの割り当てを忘れると、
+    ///         再生した瞬間に NullReferenceException で落ちます。
+    ///         フィールド名の先頭を大文字にした名前のGameObjectを探して入れます
+    ///         （modeSelectPanel → ModeSelectPanel）。
+    ///         すでに埋まっているものには触りません。
+    /// </summary>
+    private static void AssignMissingPanels(GameFlowController flow)
+    {
+        string[] panelFields =
+        {
+            "modeSelectPanel", "subjectSelectPanel", "quizPanel", "feedbackPanel", "resultPanel"
+        };
+
+        var serialized = new SerializedObject(flow);
+        bool changed = false;
+
+        foreach (string fieldName in panelFields)
+        {
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || property.objectReferenceValue != null) continue;
+
+            string objectName = char.ToUpperInvariant(fieldName[0]) + fieldName.Substring(1);
+            var panel = FindInScene(objectName);
+
+            if (panel == null)
+            {
+                Debug.LogWarning("[Question] " + fieldName + " が空ですが、「" + objectName
+                                 + "」という名前のGameObjectが見つかりません。Inspectorで割り当ててください。");
+                continue;
+            }
+
+            property.objectReferenceValue = panel;
+            changed = true;
+            Debug.Log("[Question] GameFlowController." + fieldName + " に " + objectName + " を割り当てました。");
+        }
+
+        if (changed) serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    /// 非アクティブなパネルも対象にするため、Transformを総なめして探す。
+    private static GameObject FindInScene(string objectName)
+    {
+        foreach (var transform in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (transform.name == objectName) return transform.gameObject;
+        }
+        return null;
     }
 
     /// Systems の下に指定名のGameObjectを用意し、コンポーネントを付けて返す。すでにあれば作り直さない。

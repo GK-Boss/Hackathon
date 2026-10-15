@@ -16,6 +16,7 @@
 | 2026-10-06 | Questionまわりのクラス名を変えたら、Sceneの参照が全部外れた | Unityはスクリプト参照を`.cs`ファイルのGUIDで持つ。ファイルを削除して作り直したためGUIDが変わり、`QuestionManager`・`QuestionGenerator`の参照が切れた | `Tools > Learning Game > Setup Question System` で再割り当て。`CommonSceneWiringTests` が3件とも検出した | 解決 |
 | 2026-10-15 | Scene UIを自動再生成しようとして、手で組み替えられたUIを壊しかけた | `SceneUIBuilder` はCanvasを丸ごと作り直す。Sceneには `AnswerButtons` という手作りの親オブジェクトがあり、ボタンがグループ化されていた。再生成の想定と実物がずれていた | 再生成をやめ、足りないボタンだけ複製する `Match Choice Buttons To Spec` を作った。batchmodeでは未保存のまま終了していたため実害なし | 解決 |
 | 2026-10-15 | `QuestionManager` が `Task.Result` でリポジトリを待っていた | ローカル実装は同期で返るので動いていたが、サーバー実装に差し替えた瞬間にメインスレッドでデッドロックする書き方だった | 出題候補を手元にキャッシュする方式に変更し、`.Result` を全廃した | 解決 |
+| 2026-10-15 | 再生すると `GameFlowController.Start()` で NullReferenceException になる状態だった | `modeSelectPanel` のフィールドは追加されていたが、Sceneで未割り当てだった。`Start()` が `modeSelectPanel.SetActive(true)` を呼ぶので、起動直後に必ず落ちる。コンパイルは通るため気づけない | `Setup Question System` が、空のパネル参照を同名のGameObjectで自動で埋めるようにした。`CommonSceneWiringTests` が検出 | 解決 |
 
 ---
 
