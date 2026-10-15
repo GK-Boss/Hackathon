@@ -1,0 +1,111 @@
+{
+    "questions": [
+        {
+            "id": "unity-001",
+            "subject": "Unity",
+            "difficulty": 1,
+            "questionText": "Unityで2D画像を表示するコンポーネントは？",
+            "choices": ["SpriteRenderer", "AudioSource", "Light", "Animator", "Camera", "Rigidbody"],
+            "correctIndex": 0,
+            "explanation": "SpriteRendererはSpriteアセットを画面に描画します。2Dゲームの見た目は基本これで作ります。",
+            "relatedTerms": [
+                { "term": "SpriteRenderer", "relevance": 5 },
+                { "term": "Sprite", "relevance": 4 },
+                { "term": "コンポーネント", "relevance": 2 }
+            ],
+            "verified": true
+        },
+        {
+            "id": "unity-002",
+            "subject": "Unity",
+            "difficulty": 1,
+            "questionText": "ゲーム開始時に一度だけ呼ばれるUnityメソッドは？",
+            "choices": ["Start", "Update", "LateUpdate", "FixedUpdate", "OnGUI", "OnDestroy"],
+            "correctIndex": 0,
+            "explanation": "Startは有効なコンポーネントの初期化時に一度だけ呼ばれます。毎フレーム呼ばれるUpdateとは役割が違います。",
+            "relatedTerms": [
+                { "term": "ライフサイクル", "relevance": 5 },
+                { "term": "Start", "relevance": 5 },
+                { "term": "Update", "relevance": 3 },
+                { "term": "MonoBehaviour", "relevance": 2 }
+            ],
+            "verified": true
+        },
+        {
+            "id": "unity-003",
+            "subject": "Unity",
+            "difficulty": 1,
+            "questionText": "UIボタンのクリック処理を登録するイベントは？",
+            "choices": ["onClick", "onDraw", "onMove", "onLoad", "onTick", "onHover"],
+            "correctIndex": 0,
+            "explanation": "Button.onClickにリスナーを登録すると、クリック時に処理を呼べます。AddListenerで追加します。",
+            "relatedTerms": [
+                { "term": "UIイベント", "relevance": 5 },
+                { "term": "Button", "relevance": 4 },
+                { "term": "uGUI", "relevance": 2 }
+            ],
+            "verified": true
+        },
+        {
+            "id": "unity-004",
+            "subject": "Unity",
+            "difficulty": 2,
+            "questionText": "2D物理演算で質量や速度を管理するコンポーネントは？",
+            "choices": ["Rigidbody2D", "Rigidbody", "PhysicsCamera", "ColliderUI", "ForceManager", "Transform"],
+            "correctIndex": 0,
+            "explanation": "Rigidbody2Dは2D物理演算の質量や速度を管理します。3D用のRigidbodyとは別のコンポーネントです。",
+            "relatedTerms": [
+                { "term": "Rigidbody2D", "relevance": 5 },
+                { "term": "2D物理", "relevance": 4 },
+                { "term": "Collider2D", "relevance": 3 },
+                { "term": "コンポーネント", "relevance": 1 }
+            ],
+            "verified": true
+        },
+        {
+            "id": "general-001",
+            "subject": "一般教養",
+            "difficulty": 1,
+            "questionText": "水が海面から気体になって大気へ移る現象は？",
+            "choices": ["蒸発", "凝固", "融解", "沈殿", "燃焼", "昇華"],
+            "correctIndex": 0,
+            "explanation": "蒸発は液体が気体へ変化する現象です。海面から蒸発した水蒸気が上空で冷えて雲になります。",
+            "relatedTerms": [
+                { "term": "水循環", "relevance": 5 },
+                { "term": "状態変化", "relevance": 4 },
+                { "term": "気象", "relevance": 2 }
+            ],
+            "verified": true
+        },
+        {
+            "id": "general-002",
+            "subject": "一般教養",
+            "difficulty": 1,
+            "questionText": "日本の国鳥は？",
+            "choices": ["キジ", "ツル", "ハト", "カラス", "ワシ", "トキ"],
+            "correctIndex": 0,
+            "explanation": "キジは日本の国鳥です。1947年に日本鳥学会によって選定されました。",
+            "relatedTerms": [
+                { "term": "日本文化", "relevance": 5 },
+                { "term": "鳥類", "relevance": 3 },
+                { "term": "国のシンボル", "relevance": 2 }
+            ],
+            "verified": true
+        },
+        {
+            "id": "general-003",
+            "subject": "一般教養",
+            "difficulty": 1,
+            "questionText": "光合成で植物が空気中から取り込む気体は？",
+            "choices": ["二酸化炭素", "酸素", "窒素", "水素", "ヘリウム", "メタン"],
+            "correctIndex": 0,
+            "explanation": "植物は二酸化炭素と水から光のエネルギーを使って養分を作ります。このとき酸素を放出します。",
+            "relatedTerms": [
+                { "term": "光合成", "relevance": 5 },
+                { "term": "二酸化炭素", "relevance": 4 },
+                { "term": "生物", "relevance": 2 }
+            ],
+            "verified": true
+        }
+    ]
+}

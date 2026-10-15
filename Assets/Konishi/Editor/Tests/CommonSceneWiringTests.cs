@@ -21,11 +21,7 @@ public class CommonSceneWiringTests
     /// 空のままで正しい参照。ここに書いたものは検査から外す。
     /// 「TypeName.fieldName」の形式で、必ず理由をコメントに書くこと。
     /// </summary>
-    private static readonly HashSet<string> AllowedEmpty = new HashSet<string>
-    {
-        // AIAPIClient.settings は空が正常。Awakeで Resources から読み込むため。
-        "AIAPIClient.settings"
-    };
+    private static readonly HashSet<string> AllowedEmpty = new HashSet<string>();
 
     [OneTimeSetUp]
     public void OpenScene()
@@ -37,7 +33,6 @@ public class CommonSceneWiringTests
     public void ゲーム進行の参照がすべて埋まっている()
     {
         AssertAllReferencesAssigned<GameFlowController>();
-        AssertAllReferencesAssigned<QuestionManager>();
     }
 
     [Test]
@@ -49,13 +44,6 @@ public class CommonSceneWiringTests
     }
 
     [Test]
-    public void AI連携の参照がすべて埋まっている()
-    {
-        AssertAllReferencesAssigned<AIAPIClient>();
-        AssertAllReferencesAssigned<AIQuestionGenerator>();
-    }
-
-    [Test]
     public void 選択肢のUIが想定の数だけ並んでいる()
     {
         var questionUI = FindInScene<QuestionUI>();
@@ -64,10 +52,10 @@ public class CommonSceneWiringTests
         foreach (var ui in questionUI)
         {
             var serialized = new SerializedObject(ui);
-            Assert.AreEqual(PromptTemplates.ChoiceCount, serialized.FindProperty("answerTexts").arraySize,
-                "answerTexts の数が PromptTemplates.ChoiceCount と違います。");
-            Assert.AreEqual(PromptTemplates.ChoiceCount, serialized.FindProperty("answerButtons").arraySize,
-                "answerButtons の数が PromptTemplates.ChoiceCount と違います。");
+            Assert.AreEqual(QuestionRequest.DefaultChoiceCount, serialized.FindProperty("answerTexts").arraySize,
+                "answerTexts の数が QuestionRequest.DefaultChoiceCount（6）と違います。");
+            Assert.AreEqual(QuestionRequest.DefaultChoiceCount, serialized.FindProperty("answerButtons").arraySize,
+                "answerButtons の数が QuestionRequest.DefaultChoiceCount（6）と違います。");
         }
     }
 

@@ -1,11 +1,20 @@
-このフォルダには OpenAISettings.asset（OpenAIのAPIキー設定）を置きます。
+このフォルダには2つのファイルを置きます。
 
-OpenAISettings.asset はAPIキーを含むため .gitignore で除外しています。
-リポジトリをクローンした人は、Unity Editorで次のメニューを実行してください。
+1. questions_seed.json
+   人が目視検証した固定問題です。デモの本線になります。
+   gitに入れるので、テキストエディタで直接編集して問題を増やしてください。
+   Unityを開く必要はありません。書き方は README.md を見てください。
 
-  Tools > Learning Game > Setup AI Client
+2. AIClientSettings.asset
+   AIへの接続設定です。接続情報を含むため .gitignore で除外しています。
+   リポジトリをクローンした人は、Unity Editorで次を実行してください。
 
-実行すると OpenAISettings.asset が作られ、SceneのAIClientも自動で用意されます。
-あとは Inspector で Api Key を入力するだけです。
+     Tools > Learning Game > Setup Question System
 
-キーを入れなくても、ゲームは固定問題で動きます。
+   実行すると AIClientSettings.asset が作られ、SceneのQuestionManagerも用意されます。
+   あとは Inspector で接続先を設定するだけです。
+
+   本番は Mode = GameServer（自前サーバー経由）にしてください。
+   OpenAIのAPIキーはサーバー側だけに置き、Unityのビルドには含めません。
+
+AIを設定しなくても、questions_seed.json の問題でゲームは動きます。

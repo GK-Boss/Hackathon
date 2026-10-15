@@ -11,7 +11,7 @@
   ↓
 問題表示
   ↓
-5択回答
+6択回答
   ├─ 正解 → Chain +1 → 次の問題
   ├─ 不正解 → Chain・スコア0 → 結果
   └─ わかりません → Chain² → 結果
@@ -23,7 +23,7 @@
 
 - 分野選択
 - 問題表示
-- 5択回答
+- 6択回答
 - 正解判定
 - Chain管理
 - 不正解時の終了
@@ -49,7 +49,7 @@
 | 分野レベル・コレクション | セーブ機能が前提になる。デモ1回分では効果が出ない |
 | セーブ機能 | デモは1プレイで完結するため不要 |
 | ランキング | サーバーが要る。3週間では割に合わない |
-| **6択への移行** | UI・固定問題・プロンプトの同時変更が必要。移行手順は9章に記載済み。企画書(10/05)は6択だが、デモは5択で通す |
+| ~~6択への移行~~ | **2026-10-15に実施済み**。企画書(1005版)が正式仕様のため6択にした（9章） |
 | **AI検証工程** | 検証するAIも間違えるため保証にならず、コストと待ち時間が倍になる。デモは人が目視検証した固定問題で通す |
 | **PlayModeでの1周自動化** | ボタン操作の再現に時間がかかる。1周の確認は人がやる |
 
@@ -118,17 +118,24 @@
 1つのスクリプトに複数の役割を持たせない。
 
 ```text
-ChainManager        Chainだけを管理
-ScoreCalculator     スコアだけを計算
-QuestionManager     どの問題を出すかだけを管理
-QuestionUI          問題画面だけを制御
-FeedbackUI          フィードバック画面だけを制御
-ResultUI            結果画面だけを制御
-GameFlowController  画面遷移と全体の接続だけを担当
-PromptTemplates     AIへ送るプロンプト文だけを保持
-AIAPIClient         OpenAI APIとの送受信だけを担当
-AIQuestionGenerator 生成の先読みと検証だけを担当
-AIQuestionDto       AIの応答JSONの受け取りと検証だけを担当
+ChainManager          Chainだけを管理
+ScoreCalculator       スコアだけを計算
+QuestionUI            問題画面だけを制御
+FeedbackUI            フィードバック画面だけを制御
+ResultUI              結果画面だけを制御
+GameFlowController    画面遷移と全体の接続だけを担当
+
+QuestionManager       問題システムの窓口。中の部品をまとめるだけ
+QuestionData          問題のデータだけを持つ（ただのクラス／JSON）
+RelatedTerm           関連語と関連度だけを持つ
+QuestionRequest       生成の注文だけを持つ
+QuestionSelector      次にどれを出すかだけを決める
+KnowledgeTracker      プレイ中の知識の記録だけを担当
+IQuestionRepository   保存と取得だけを担当
+AIQuestionGenerator   AIに作らせることだけを担当
+AIQuestionValidator   検証だけを担当
+PromptTemplates       プロンプト文だけを保持
+IQuestionAIClient     AIとの送受信だけを担当
 ```
 
 ### UIはSceneで管理する
@@ -162,7 +169,6 @@ GameRoot
 │   ├── ChainManager
 │   ├── ScoreCalculator
 │   ├── QuestionManager
-│   ├── AIClient（AIAPIClient + AIQuestionGenerator）
 │   └── AudioManager
 └── UI
     └── LearningGameCanvas
@@ -210,21 +216,31 @@ GameRoot
 
 ### 自動テストで測るもの
 
-`Assets/Konishi/Editor/Tests/` のEditModeテストで測る。回し方は `DEVELOPMENT_POLICY.md`「測ってから次へ進む」を参照。
+`Assets/Konishi/Editor/Tests/` のEditModeテスト139本で測る。回し方は `DEVELOPMENT_POLICY.md` を参照。
 
 - [x] 正解するとChainが増える（`ChainManagerTests`）
 - [x] 「わかりません」でChain²のスコアになる（`ScoreCalculatorTests`）
-- [x] 固定問題がAPIなしで出題でき、進めても尽きない（`QuestionManagerTests`）
-- [x] AIの壊れた応答を弾ける（`AIQuestionDtoTests`）
+- [x] 問題が6択である（`QuestionDataTests`）
+- [x] 関連語と関連度(1〜5)を持てる（`QuestionDataTests`）
+- [x] AIの壊れた問題を弾ける（`AIQuestionValidatorTests`）
+- [x] 選択肢が20文字以内に保たれる（`AIQuestionValidatorTests`）
+- [x] 関連語の重み付け選択と1/Nルールが仕様どおり（`QuestionSelectorTests`）
+- [x] Reloadで知識が二重カウントされない（`KnowledgeTrackerTests`）
+- [x] 検証失敗時の修正が1回だけで、無限リトライしない（`AIQuestionGeneratorTests`）
+- [x] 問題をJSONで保存・読み込みできる（`LocalJsonQuestionRepositoryTests`）
+- [x] 種データが全問とも6択で検証に通る（`LocalJsonQuestionRepositoryTests`）
+- [x] `GetNextQuestion()` だけで問題を取得できる（`QuestionManagerTests`）
+- [x] `GenerateBossQuestion()` で今回の知識からボス問題を取得できる（`QuestionManagerTests`）
+- [x] APIなしでも出題でき、進めても尽きない（`QuestionManagerTests`）
 - [x] SceneのInspector参照に空が無い（`CommonSceneWiringTests`）
-- [x] 選択肢のUIが5個並んでいる（`CommonSceneWiringTests`）
+- [x] 選択肢のUIが6個並んでいる（`CommonSceneWiringTests`）
 
 ### 人が触って測るもの
 
 **自動テストでは埋まらない。** 実際にUnityで再生して確認する。
 
 - [ ] 分野選択からゲームを開始できる
-- [ ] 5択問題に回答できる
+- [ ] 6択問題に回答できる
 - [ ] 不正解するとスコア0で終了し、結果画面が出る
 - [ ] 「わかりません」から結果画面まで進める
 - [ ] UIをScene上で人間が調整できる
@@ -239,63 +255,165 @@ GameRoot
 - [ ] セーブ
 - [ ] ランキング
 
-## 9. AI連携（2026-10-06 追加）
+## 9. 問題システム（2026-10-15 全面改訂）
 
-### 使用するAI
+指示書「AI・問題データベース担当 実装指示書」に合わせて作り直した。
 
-ChatGPT（OpenAI Chat Completions API）を使用する。
+### ゲーム側から見える窓口
+
+**ゲーム側が触るのは `QuestionManager` だけ。** AI・DB・関連語選択・検証・保存は中に隠す。
+
+```csharp
+QuestionData question = questionManager.GetNextQuestion();
+questionManager.RegisterQuestionAnswered(question, isCorrect);
+questionManager.RegisterQuestionReloaded(question);
+QuestionData boss = await questionManager.GenerateBossQuestion();
+```
 
 ### 構成
 
 ```text
-Assets/Konishi/Scripts/AI/
-├── OpenAISettings.cs       APIキー・モデル・タイムアウトの設定（ScriptableObject）
-├── PromptTemplates.cs      プロンプト文の組み立て
-├── AIAPIClient.cs          OpenAI APIへの送受信
-└── AIQuestionGenerator.cs  次問題の先読み生成と検証
-
-Assets/Konishi/Scripts/Data/
-└── AIQuestionDto.cs        応答JSONの受け取りと検証
+GameFlowController
+       ↓
+QuestionManager（Facade）
+       ↓
+ ├── IQuestionRepository    問題の保存・取得（いまはローカルJSON、将来サーバー）
+ ├── QuestionSelector       次の問題を決める（関連語の重み付け＋1/Nルール）
+ ├── AIQuestionGenerator    AI問題生成
+ ├── AIQuestionValidator    生成結果の検証
+ └── KnowledgeTracker       プレイ中の知識を記録
 ```
 
-### 動作方針
+```text
+Assets/Konishi/Scripts/Question/
+├── QuestionData.cs                   問題そのもの（6択・関連語つき）
+├── RelatedTerm.cs                    関連語と関連度(1〜5)
+├── QuestionRequest.cs                生成の注文（通常・ボス両対応）
+├── QuestionManager.cs                窓口
+├── QuestionSelector.cs               関連語の重み付け選択と1/Nルール
+├── KnowledgeTracker.cs               プレイ中の知識
+├── IQuestionRepository.cs            保存・取得の窓口
+├── LocalJsonQuestionRepository.cs     その実装
+├── AIQuestionGenerator.cs            AI生成
+└── AIQuestionValidator.cs            検証
 
-- プレイヤーが回答している間に、次の問題を1問だけバックグラウンドで生成する
-- 生成が間に合わない／通信失敗／検証に通らない場合は、固定問題へフォールバックする
-- 生成に失敗しても即時に再試行せず、次の機会に別の問題を生成する
-- 検証内容は「問題文が空でない」「選択肢が規定数ある」「選択肢が重複していない」
-  「correctIndexが範囲内」「解説が空でない」の5点
+Assets/Konishi/Scripts/AI/
+├── IQuestionAIClient.cs       AI通信の窓口
+├── GameServerAIClient.cs      本番：自前サーバー経由
+├── DirectOpenAIClient.cs      開発用：OpenAI直叩き
+├── AIClientSettings.cs        接続設定
+└── PromptTemplates.cs         プロンプト（通常・ボス・修正）
+```
 
-### APIキーの扱い
+### 通常問題の選び方（1/Nルール）
 
-`Assets/Konishi/Resources/OpenAISettings.asset` に保存し、`.gitignore` で除外する。
-Unityメニュー `Tools > Learning Game > Create OpenAI Settings` から各自が作成する。
+```text
+現在の問題の関連語を、関連度で重み付けして1つ選ぶ
+  ↓
+その関連語に紐づく既存問題数を N とする
+  ↓
+N = 0 または 1 → 必ず新規生成
+N = 2 → 1/2 で新規生成
+N = 3 → 1/3 で新規生成
+  ↓
+生成が間に合わなければ既存問題を使う（ゲームは止めない）
+```
 
-注意：現在はクライアントから直接APIを呼んでいるため、ビルドしたアプリにキーが含まれる。
-ハッカソンのデモでは許容するが、ストア公開前には中継サーバーを挟む必要がある。
+完全ランダムにはしない。生成した問題は、今回使わなくても必ず保存する。
 
-### 選択肢数について
+### ボス問題
 
-企画書（10/05版）は6択だが、現行のUI・固定問題・プロンプトはすべて5択で統一している。
-6択へ移行する場合は、`PromptTemplates.ChoiceCount`、`QuestionUI`、`SceneUIBuilder`、
-`QuestionManager` の固定問題を同時に変更すること。
+通常問題から選ばない。そのプレイ中に触れた知識から新しく作る。
 
-## 10. 現在地（2026-10-06）
+- `KnowledgeTracker` が「アドレナリン×3」のように出現回数を記録する
+- 正解したかではなく、**その問題に触れたか**で記録する
+- Reloadで同じ問題に再挑戦しても二重カウントしない
+- 生成時には**関連度(1〜5)を渡さず、出現回数だけを渡す**（企画書の指定）
+- 複数の知識を組み合わせた難問をAIに作らせる
+
+### 検証と、失敗したときの扱い
+
+```text
+生成 → 検証 → 失敗 → 【1回だけ】修正を依頼 → 再検証 → 失敗 → 破棄
+```
+
+同じ生成をその場で繰り返さない。次の機会に別の問題を作る。
+
+検証項目（`AIQuestionValidator`）:
+6択である／選択肢が空でない／選択肢が重複していない／correctIndexが範囲内／
+問題文が成立している／解説がある／関連語がある／関連度が1〜5／関連語が重複していない／
+分野が注文どおり／選択肢が20文字以内／既存問題と重複していない
+
+**内容そのものの正しさはコードでは判定できない。** 人が確認して `verified` を立てる。
+
+### APIキーの扱い（2026-10-15 変更）
+
+```text
+Unity  →(HTTPS)→  自前サーバー  →  OpenAI API
+```
+
+OpenAIのAPIキーはサーバー側だけに置き、Unityのビルドに含めない。
+
+サーバーができるまでは `AIClientSettings.mode` を `DirectOpenAI_DevelopmentOnly` にすれば
+Unityから直接呼べるが、**この設定のままビルドしないこと**。
+
+サーバー側に用意してもらう仕様:
+
+```text
+POST  Content-Type: application/json
+リクエスト  { "system": "...", "user": "...", "model": "...", "temperature": 0.8 }
+レスポンス  { "content": "AIが返した本文" }
+```
+
+### 問題データの置き場
+
+| 置き場 | 中身 | gitに入れるか |
+|---|---|---|
+| `Assets/Konishi/Resources/questions_seed.json` | 人が検証した固定問題。**デモの本線** | 入れる |
+| `Application.persistentDataPath/questions.json` | AIが生成した問題。端末ごと | 入れない |
+
+JSONは「Unityとサーバーの間のデータ形式」であって、JSONファイル自体をDBとは考えない。
+サーバーができたら `IQuestionRepository` の実装を差し替える。`QuestionManager` 側は無修正でよい。
+
+### 選択肢数について（2026-10-15 変更）
+
+**企画書(1005版)が正式仕様なので6択にした。** 以前の5択実装は途中段階だった。
+
+選択肢数の定義は `QuestionRequest.DefaultChoiceCount` の1か所だけ。
+UI・種データ・プロンプト・検証はすべてこの値を見ている。
+
+変更したいときは次の順で行う。
+
+1. `QuestionRequest.DefaultChoiceCount` を変える
+2. `Tools > Learning Game > Match Choice Buttons To Spec` を実行する
+   （`Create Scene UI` はUIを作り直すので、手で整えた配置が消える。こちらは足りないボタンを複製するだけ）
+3. `questions_seed.json` の全問の選択肢を増減する
+4. テストを回す。直し漏れは `CommonSceneWiringTests` と `LocalJsonQuestionRepositoryTests` が教えてくれる
+
+## 10. 現在地（2026-10-15）
 
 済んだもの。
 
 - コアループのプロトタイプと、責務分割したスクリプト構成
-- AI問題生成（ChatGPT／フォールバック付き）とSceneへの配線
-- **EditModeテスト34本**。1コマンドで、ロジックとSceneの参照をまとめて測れる状態
+- **問題システムを指示書どおりに全面改訂**（6択・関連語・1/Nルール・ボス問題・Facade化）
+- **EditModeテスト139本**。1コマンドで、ロジックとSceneの参照をまとめて測れる状態
 
-**次に行うのは「人が測る」作業。** 自動テストで埋まらない項目が残っている。
+**次に行うのは「人が測る」作業と、中身の用意。**
 
 1. Unityでコアループを1周再生し、完成判定「人が触って測るもの」を埋める
-2. 落ちた項目を `BUGS.md` に記録してから直す
-3. UIの見た目を人間が調整する
-4. 検証済み固定問題を10〜15問に増やす（**人が目視検証する。デモの本線になる**）
-5. `OpenAISettings.asset` にAPIキーを入れ、AI生成問題の品質を確認する
+2. 6個目の選択肢ボタンの位置をInspectorで整える（複製しただけなので要調整）
+3. 落ちた項目を `BUGS.md` に記録してから直す
+4. 検証済み固定問題を10〜15問に増やす（**人が目視検証する。デモの本線**）
+5. 自前サーバーを立てるか、当面 `DirectOpenAI_DevelopmentOnly` で進めるかを決める
 6. `exe/` を現行コードで再ビルドする（ビルド担当は11章）
+
+### まだ無いもの（意図的に未実装）
+
+| 項目 | 理由 |
+|---|---|
+| 自前サーバーと `ServerQuestionRepository` | サーバーが未着手。`IQuestionRepository` を差し替えるだけで載る形にはしてある |
+| 問題内容の正しさの自動検証 | コードでは判定できない。人が `verified` を立てる運用 |
+| Reload・タイマー・報酬抽選・ボス戦の画面 | ゲーム側（Knight担当）の実装待ち。`RegisterQuestionReloaded` と `GenerateBossQuestion` は受け口だけ用意済み |
 
 ## 11. ビルド担当（未決定）
 

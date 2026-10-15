@@ -41,15 +41,21 @@ public static class SceneUIBuilder
         Text(quiz.transform, "SubjectText", "Unity", 28, Color.cyan, .05f, .96f, TextAnchor.MiddleLeft);
         Text(quiz.transform, "ChainText", "CHAIN  0", 34, new Color(1f, .73f, .25f), .55f, .96f, TextAnchor.MiddleRight);
         var questionText = Text(quiz.transform, "QuestionText", "問題文", 38, Color.white, .58f, .79f);
-        var answerTexts = new Text[5];
-        var answerButtons = new Button[5];
-        for (int i = 0; i < 5; i++)
+        // 選択肢の数は QuestionRequest.DefaultChoiceCount（企画書どおり6）に従う。
+        // 数を変えたらこのメニューを実行し直すこと。配置は下の式で自動的に詰められる。
+        int choiceCount = QuestionRequest.DefaultChoiceCount;
+        var answerTexts = new Text[choiceCount];
+        var answerButtons = new Button[choiceCount];
+        const float firstTop = .53f;      // 1つ目のボタンの上端
+        const float rowHeight = .058f;    // ボタンの高さ
+        const float rowPitch = .072f;     // 次のボタンまでの間隔
+        for (int i = 0; i < choiceCount; i++)
         {
-            float top = .50f - i * .085f;
-            answerButtons[i] = AddButton(quiz.transform, "AnswerButton_" + (i + 1), "選択肢 " + (i + 1), top - .065f, top);
+            float top = firstTop - i * rowPitch;
+            answerButtons[i] = AddButton(quiz.transform, "AnswerButton_" + (i + 1), "選択肢 " + (i + 1), top - rowHeight, top);
             answerTexts[i] = answerButtons[i].GetComponentInChildren<Text>();
         }
-        var dontKnowButton = AddButton(quiz.transform, "DontKnowButton", "？  わかりません（Chainをスコア化）", .03f, .105f);
+        var dontKnowButton = AddButton(quiz.transform, "DontKnowButton", "？  わかりません（Chainをスコア化）", .012f, .082f);
         quiz.SetActive(false);
         var questionUI = quiz.AddComponent<QuestionUI>();
         Assign(questionUI, "questionText", questionText);

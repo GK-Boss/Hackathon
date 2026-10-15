@@ -52,7 +52,7 @@
   ↓
 問題表示
   ↓
-5択回答
+6択回答
   ├─ 正解 → Chain +1 → 次の問題
   ├─ 不正解 → スコア0 → 結果画面
   └─ わかりません → Chain² → 結果画面
@@ -62,11 +62,72 @@
 
 ```text
 Assets/Konishi/Scripts/
-├── AI/          ChatGPT連携（プロンプト・通信・生成管理）
-├── Data/        問題データの型
-├── GameLogic/   Chain・スコア・出題・画面遷移
+├── Question/    問題まわり一式（下の表を参照）
+├── AI/          AIへの接続（設定・通信・プロンプト）
+├── GameLogic/   Chain・スコア・画面遷移
 └── UI/          各画面の表示
 ```
+
+### 問題まわりのクラス
+
+**ゲーム側が触るのは `QuestionManager` だけです。** AI・DB・関連語の選び方は、その奥に隠れています。
+
+```csharp
+QuestionData question = questionManager.GetNextQuestion();
+questionManager.RegisterQuestionAnswered(question, isCorrect);
+questionManager.RegisterQuestionReloaded(question);
+QuestionData boss = await questionManager.GenerateBossQuestion();
+```
+
+| クラス | 役割 |
+|---|---|
+| `QuestionManager` | **窓口**。ゲーム側はこれだけ使う |
+| `QuestionData` | 問題そのもの。ただのクラスで、JSONでやりとりする |
+| `RelatedTerm` | 関連語と関連度（1〜5） |
+| `QuestionRequest` | 「どんな問題を作ってほしいか」の注文 |
+| `QuestionSelector` | 次にどれを出すか（関連語の重み付け＋1/Nルール） |
+| `KnowledgeTracker` | そのプレイ中に触れた知識を記録（ボス問題の材料） |
+| `IQuestionRepository` | 問題の保存・取得の窓口 |
+| `LocalJsonQuestionRepository` | その実装。サーバーができたら差し替える |
+| `AIQuestionGenerator` | AIに問題を作らせる |
+| `AIQuestionValidator` | 作られた問題が出題できる形かを検証 |
+
+直したい場所の見つけ方の例:
+
+- 選択肢が長すぎる → `AIQuestionValidator`
+- 同じ問題が続く → `QuestionSelector`
+- ボス問題の中身 → `KnowledgeTracker` と `PromptTemplates`
+- 問題の保存先 → `LocalJsonQuestionRepository`
+
+### 問題を増やすには
+
+`Assets/Konishi/Resources/questions_seed.json` をテキストエディタで編集します。
+**Unityを開く必要はありません。**
+
+```json
+{
+    "id": "unity-005",
+    "subject": "Unity",
+    "difficulty": 1,
+    "questionText": "問題文",
+    "choices": ["選択肢1", "選択肢2", "選択肢3", "選択肢4", "選択肢5", "選択肢6"],
+    "correctIndex": 0,
+    "explanation": "解説",
+    "relatedTerms": [
+        { "term": "関連キーワード", "relevance": 5 },
+        { "term": "周辺のキーワード", "relevance": 2 }
+    ],
+    "verified": true
+}
+```
+
+- `choices` は**必ず6個**、各**20文字以内**。長い文が必要なときは、
+  `questionText` に「A. 〜 / B. 〜」と書き、`choices` は `["A","B","C","D","E","F"]` にします
+- `relatedTerms` は**最低1つ**。関連度は1〜5で、5がこの問題の中心です。次の問題はここから選ばれます
+- `verified` は、人が目視で正しさを確認したら `true` に。デモで使うのは `true` のものだけです
+- 編集したらテストを回してください。形式が壊れていれば `LocalJsonQuestionRepositoryTests` が教えてくれます
+
+AIが生成した問題は `Application.persistentDataPath/questions.json` に別で保存されます（gitには入りません）。
 
 ## UIの作成
 
@@ -98,9 +159,15 @@ Tools > Learning Game > Create Scene UI
 |---|---|
 | `ChainManagerTests` | 正解で+1、ミスで0 |
 | `ScoreCalculatorTests` | Chainの二乗がスコアになる |
-| `QuestionManagerTests` | APIなしでも固定問題が出て、進めても尽きない |
-| `AIQuestionDtoTests` | AIの壊れた応答を弾ける |
-| `CommonSceneWiringTests` | SceneのInspector参照に空が無い |
+| `QuestionDataTests` | 6択であること、関連語と関連度を持てること |
+| `LocalJsonQuestionRepositoryTests` | JSONの保存・読み込み、`questions_seed.json` が読めること |
+| `AIQuestionValidatorTests` | 壊れた問題を弾けること（6択・関連語・関連度・選択肢の長さ） |
+| `QuestionSelectorTests` | 関連度の重み付けと1/Nルール |
+| `KnowledgeTrackerTests` | 知識の記録、Reloadで二重カウントしないこと |
+| `AIQuestionGeneratorTests` | 修正は1回だけで、無限リトライしないこと |
+| `QuestionRequestTests` | 難易度の変換、注文がプロンプトに反映されること |
+| `QuestionManagerTests` | 窓口だけで問題とボス問題を取得できること |
+| `CommonSceneWiringTests` | SceneのInspector参照に空が無いこと |
 
 `CommonSceneWiringTests` が要です。
 Unityで一番多い「Inspectorの参照が外れていて再生した瞬間に落ちる」は、
@@ -109,27 +176,45 @@ Unityで一番多い「Inspectorの参照が外れていて再生した瞬間に
 **落ちたら、直す前に [BUGS.md](BUGS.md) に書いてください。**
 直してから書こうとすると、なぜそうなったかが消えます。
 
-## AI（ChatGPT）連携のセットアップ
+## AI連携のセットアップ
 
-問題文・選択肢・解説は ChatGPT（OpenAI API）で生成できます。
-APIキーが未設定でも、固定問題でそのまま遊べます。
+問題文・選択肢・解説・関連語はAIで生成できます。
+**設定していなくても、`questions_seed.json` の問題でそのまま遊べます。**
+
+### 本番の構成
+
+```text
+Unity  →(HTTPS)→  自前サーバー  →  OpenAI API
+```
+
+OpenAIのAPIキーは**サーバー側だけ**に置き、Unityのビルドには含めません。
+
+サーバー側に用意してもらう仕様:
+
+```text
+POST  Content-Type: application/json
+リクエスト  { "system": "...", "user": "...", "model": "...", "temperature": 0.8 }
+レスポンス  { "content": "AIが返した本文" }
+```
 
 ### 手順
 
-1. Unity Editorで `Tools > Learning Game > Create OpenAI Settings` を実行する
-2. 作成された `Assets/Konishi/Resources/OpenAISettings.asset` をInspectorで開く
-3. `Api Key` にOpenAIのAPIキーを貼り付ける
-4. Hierarchyの `Systems` に空のGameObjectを作り、`AIAPIClient` と `AIQuestionGenerator` を付ける
-5. `QuestionManager` の `Ai Generator` に、そのGameObjectを割り当てる
+1. Unity Editorで `Tools > Learning Game > Setup Question System` を実行する
+2. できた `Assets/Konishi/Resources/AIClientSettings.asset` をInspectorで開く
+3. `Mode` を `GameServer` にし、`Server Url` を設定する
 
-`OpenAISettings.asset` はAPIキーを含むため `.gitignore` で除外しています。
-リポジトリをクローンした人は、各自で手順1〜3を行ってください。
+サーバーができるまでは `Mode` を `DirectOpenAI_DevelopmentOnly` にして
+`Open AI Api Key` を入れれば動きますが、**この設定のままビルドしないでください**。
+APIキーがアプリから抜き出せてしまいます。
+
+`AIClientSettings.asset` は `.gitignore` で除外しています。
 
 ### 動作
 
-プレイヤーが問題を解いている間に、裏で次の問題を1問だけ先読み生成します。
-生成が間に合わない、通信に失敗した、内容の検証に通らなかった場合は、
-固定問題へ自動的にフォールバックするため、ゲームが止まることはありません。
+プレイヤーが答えている間に、裏で次の問題を1問だけ作ります。
+生成が間に合わない・通信に失敗した・検証に通らなかった場合は既存問題を使うので、ゲームは止まりません。
+
+検証に落ちた場合は**1回だけ**修正を依頼し、それでも落ちたら破棄します。同じ生成を繰り返しません。
 
 ## 次の作業
 

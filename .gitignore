@@ -106,5 +106,5 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ss]ceneDependencyCache*
 
 # OpenAI APIキーを含むローカル設定（コミット禁止）
-/[Aa]ssets/Konishi/Resources/OpenAISettings.asset
-/[Aa]ssets/Konishi/Resources/OpenAISettings.asset.meta
+/[Aa]ssets/Konishi/Resources/AIClientSettings.asset
+/[Aa]ssets/Konishi/Resources/AIClientSettings.asset.meta

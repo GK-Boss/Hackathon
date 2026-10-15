@@ -18,6 +18,9 @@ public class GameFlowController : MonoBehaviour
 
     private string selectedSubject;
 
+    /// いま表示している問題。QuestionManagerから受け取ったものを保持する。
+    private QuestionData currentQuestion;
+
     private void Start() => ShowSubjectSelect();
 
     public void SelectUnity() => StartGame("Unity");
@@ -28,7 +31,7 @@ public class GameFlowController : MonoBehaviour
     {
         selectedSubject = subject;
         chainManager.ResetChain();
-        questionManager.SelectSubject(subject);
+        questionManager.StartRun(subject);
         ShowQuestion();
     }
 
@@ -46,29 +49,59 @@ public class GameFlowController : MonoBehaviour
         quizPanel.SetActive(true);
         feedbackPanel.SetActive(false);
         resultPanel.SetActive(false);
-        questionUI.Show(selectedSubject, questionManager.Current, chainManager.CurrentChain, Answer, AdmitUnknown);
+        // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
+        currentQuestion = questionManager.GetNextQuestion();
+        if (currentQuestion == null)
+        {
+            ShowResult("問題がありません", "出題できる問題が見つかりませんでした。", 0);
+            return;
+        }
+
+        questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
     }
 
     private void Answer(int choice)
     {
-        var question = questionManager.Current;
-        if (choice != question.correctIndex)
+        var question = currentQuestion;
+        bool isCorrect = choice == question.correctIndex;
+
+        // 正解・不正解にかかわらず「この問題に触れた」ことを記録する（ボス問題の材料になる）
+        questionManager.RegisterQuestionAnswered(question, isCorrect);
+
+        if (!isCorrect)
         {
             ShowResult("不正解…", "Chainはすべて失われました。\n正解: " + question.choices[question.correctIndex], 0);
             return;
         }
 
         chainManager.AddCorrectAnswer();
-        // Chainを渡すのは、AI生成の難易度指定に使うため
-        questionManager.MoveNext(chainManager.CurrentChain);
         quizPanel.SetActive(false);
-        feedbackUI.Show("正解！  Chain + 1", "関連ワード：" + question.relatedTerm, ShowQuestion);
+        feedbackUI.Show("正解！  Chain + 1", "関連ワード：" + DescribeTerms(question), ShowQuestion);
         feedbackPanel.SetActive(true);
+    }
+
+    /// <summary>
+    /// Reloadで同じ問題に再挑戦するときに呼ぶ。
+    /// Tomo注: Reload機能の実装時にここを使ってください。知識の二重カウントを防ぎます。
+    /// </summary>
+    public void RetryCurrentQuestion()
+    {
+        if (currentQuestion == null) return;
+
+        questionManager.RegisterQuestionReloaded(currentQuestion);
+        questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
+    }
+
+    /// 関連語をフィードバック画面に出す形にする。
+    private static string DescribeTerms(QuestionData question)
+    {
+        var names = question.TermNames();
+        return names.Count == 0 ? "—" : string.Join("、", names);
     }
 
     private void AdmitUnknown()
     {
-        var question = questionManager.Current;
+        var question = currentQuestion;
         int score = scoreCalculator.CalculateScore(chainManager.CurrentChain);
         ShowResult("わからないを認めた！", "Chain " + chainManager.CurrentChain + " → スコア " + score + "\n\n" + question.explanation, score);
     }

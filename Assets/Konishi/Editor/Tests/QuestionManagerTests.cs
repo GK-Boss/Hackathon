@@ -1,103 +1,257 @@
 using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using UnityEngine;
 
 /// <summary>
-/// 出題まわりの検査。
+/// 問題システムの窓口の検査（指示書 §30、§34）。
 ///
-/// Tomo注: ここが見ているのは「デモ保険が効いているか」です。
-///         AIを一切設定していない状態（aiGenerator = null）で、固定問題だけでゲームが回ることを確認します。
+/// Tomo注: ここが見ているのは2つです。
+///           1. ゲーム側が QuestionManager だけで問題を取得できること
+///           2. AIが無くても（APIキー未設定でも）デモが回ること
+///
 ///         デモ当日にAPIが落ちても遊べる、という前提がここで守られています。
 /// </summary>
 public class QuestionManagerTests
 {
     private GameObject host;
     private QuestionManager manager;
+    private LocalJsonQuestionRepository repository;
+    private string tempPath;
 
     [SetUp]
     public void SetUp()
     {
+        tempPath = Path.Combine(Path.GetTempPath(), "qm_test_" + System.Guid.NewGuid().ToString("N") + ".json");
+
         host = new GameObject("QuestionManagerHost");
-        // aiGenerator は未設定のまま。これがAPIなしの状態を再現している。
         manager = host.AddComponent<QuestionManager>();
+
+        // 端末に残っている生成済み問題に左右されないよう、種データだけに揃える
+        repository = new LocalJsonQuestionRepository(tempPath);
+        repository.LoadSeed();
+
+        Configure(aiClient: null);
+    }
+
+    /// 部品を差し替えて初期化する。乱数は固定して結果をぶれさせない。
+    private void Configure(IQuestionAIClient aiClient)
+    {
+        manager.Configure(
+            repository,
+            new QuestionSelector(() => 0.0),
+            new AIQuestionGenerator(aiClient, false),
+            new KnowledgeTracker());
     }
 
     [TearDown]
     public void TearDown()
     {
         Object.DestroyImmediate(host);
+        if (File.Exists(tempPath)) File.Delete(tempPath);
     }
+
+    // ---- 通常問題 ----
 
     [TestCase("Unity")]
     [TestCase("一般教養")]
-    public void AI未設定でも問題が出る(string subject)
+    public void AIなしでも問題を取得できる(string subject)
     {
-        manager.SelectSubject(subject);
-        Assert.IsNotNull(manager.Current);
-        Assert.IsNotEmpty(manager.Current.questionText);
-    }
+        manager.StartRun(subject);
+        var question = manager.GetNextQuestion();
 
-    [TestCase("Unity")]
-    [TestCase("一般教養")]
-    public void 分野を選ぶと最初の問題に戻る(string subject)
-    {
-        manager.SelectSubject(subject);
-        manager.MoveNext(1);
-        manager.MoveNext(2);
-        Assert.AreNotEqual(0, manager.CurrentIndex);
-
-        manager.SelectSubject(subject);
-        Assert.AreEqual(0, manager.CurrentIndex);
-    }
-
-    [TestCase("Unity")]
-    [TestCase("一般教養")]
-    public void 進み続けても問題が尽きない(string subject)
-    {
-        // 固定問題は数が少ないので循環する。デモ中に出題が止まらないことの確認。
-        manager.SelectSubject(subject);
-        for (int i = 0; i < 20; i++)
-        {
-            Assert.IsNotNull(manager.Current, i + "問目で問題が無くなりました。");
-            manager.MoveNext(i);
-        }
-    }
-
-    [TestCase("Unity")]
-    [TestCase("一般教養")]
-    public void 固定問題がすべて出題できる形になっている(string subject)
-    {
-        // 固定問題はデモの本線なので、中身の形式をここで検査しておく。
-        manager.SelectSubject(subject);
-        var seen = new HashSet<string>();
-
-        for (int i = 0; i < 20; i++)
-        {
-            var question = manager.Current;
-            seen.Add(question.questionText);
-
-            Assert.AreEqual(PromptTemplates.ChoiceCount, question.choices.Length,
-                "選択肢の数が違います: " + question.questionText);
-            Assert.GreaterOrEqual(question.correctIndex, 0, question.questionText);
-            Assert.Less(question.correctIndex, question.choices.Length,
-                "正解indexが範囲外です: " + question.questionText);
-            Assert.IsNotEmpty(question.explanation, "解説が空です: " + question.questionText);
-
-            manager.MoveNext(i);
-        }
-
-        Assert.GreaterOrEqual(seen.Count, 2, "固定問題が1問しかありません。");
+        Assert.IsNotNull(question);
+        Assert.IsNotEmpty(question.questionText);
+        Assert.AreEqual(subject, question.subject);
     }
 
     [Test]
-    public void 分野ごとに別の問題が出る()
+    public void 取得した問題はそのまま表示判定できる形になっている()
     {
-        manager.SelectSubject("Unity");
-        string unityFirst = manager.Current.questionText;
+        // 指示書「ゲーム側がQuestionDataを受け取れば、表示・判定・解説表示できる」
+        manager.StartRun("Unity");
+        var question = manager.GetNextQuestion();
 
-        manager.SelectSubject("一般教養");
-        string generalFirst = manager.Current.questionText;
+        Assert.AreEqual(QuestionRequest.DefaultChoiceCount, question.choices.Length);
+        Assert.IsNotEmpty(question.CorrectChoice);
+        Assert.IsNotEmpty(question.explanation);
+        Assert.IsNotEmpty(question.relatedTerms);
+    }
 
-        Assert.AreNotEqual(unityFirst, generalFirst);
+    [Test]
+    public void 進み続けても問題が尽きない()
+    {
+        manager.StartRun("Unity");
+        for (int i = 0; i < 30; i++)
+        {
+            Assert.IsNotNull(manager.GetNextQuestion(), i + "問目で問題が無くなりました。");
+        }
+    }
+
+    [Test]
+    public void 出題される問題はすべて検証を通る()
+    {
+        manager.StartRun("Unity");
+        for (int i = 0; i < 20; i++)
+        {
+            var question = manager.GetNextQuestion();
+            Assert.IsTrue(AIQuestionValidator.Validate(question, QuestionRequest.DefaultChoiceCount, out string reason),
+                "出題できない問題が出ました: " + question + " / " + reason);
+        }
+    }
+
+    [Test]
+    public void 一周するまで同じ問題は出ない()
+    {
+        manager.StartRun("Unity");
+        int total = repository.GetQuestionsBySubjectAsync("Unity").GetAwaiter().GetResult().Count;
+        Assert.Greater(total, 1, "検査には2問以上必要です。");
+
+        var seen = new HashSet<string>();
+        for (int i = 0; i < total; i++)
+        {
+            Assert.IsTrue(seen.Add(manager.GetNextQuestion().id), "一周する前に同じ問題が出ました。");
+        }
+    }
+
+    [Test]
+    public void 攻略を始め直すと出題済みがリセットされる()
+    {
+        manager.StartRun("Unity");
+        manager.GetNextQuestion();
+        manager.GetNextQuestion();
+        Assert.AreEqual(2, manager.AskedCount);
+
+        manager.StartRun("Unity");
+        Assert.AreEqual(0, manager.AskedCount);
+    }
+
+    [Test]
+    public void 存在しない分野でも問題が出る()
+    {
+        // デモ中に分野名を打ち間違えても、何も出ないより全分野から出したほうがよい
+        manager.StartRun("存在しない分野");
+        Assert.IsNotNull(manager.GetNextQuestion());
+    }
+
+    // ---- 知識の記録 ----
+
+    [Test]
+    public void 回答すると知識が記録される()
+    {
+        manager.StartRun("Unity");
+        var question = manager.GetNextQuestion();
+        manager.RegisterQuestionAnswered(question, true);
+
+        Assert.Greater(manager.KnowledgeCounts.Count, 0);
+    }
+
+    [Test]
+    public void 不正解でも知識として記録される()
+    {
+        // 企画書どおり「正解したか」ではなく「触れたか」で記録する
+        manager.StartRun("Unity");
+        var question = manager.GetNextQuestion();
+        manager.RegisterQuestionAnswered(question, false);
+
+        Assert.Greater(manager.KnowledgeCounts.Count, 0);
+    }
+
+    [Test]
+    public void Reloadでは知識が二重カウントされない()
+    {
+        manager.StartRun("Unity");
+        var question = manager.GetNextQuestion();
+        string term = question.TermNames()[0];
+
+        manager.RegisterQuestionAnswered(question, false);
+        manager.RegisterQuestionReloaded(question);
+        manager.RegisterQuestionAnswered(question, true);
+
+        Assert.AreEqual(1, manager.KnowledgeCounts[term]);
+    }
+
+    [Test]
+    public void 攻略を始め直すと知識が消える()
+    {
+        manager.StartRun("Unity");
+        manager.RegisterQuestionAnswered(manager.GetNextQuestion(), true);
+        Assert.Greater(manager.KnowledgeCounts.Count, 0);
+
+        manager.StartRun("Unity");
+        Assert.AreEqual(0, manager.KnowledgeCounts.Count);
+    }
+
+    // ---- ボス問題 ----
+
+    [Test]
+    public void 知識が無ければボス問題は作れない()
+    {
+        Configure(new FakeAIClient(TestQuestions.ValidJson));
+        manager.StartRun("薬理学");
+
+        Assert.IsNull(manager.GenerateBossQuestion().GetAwaiter().GetResult());
+    }
+
+    [Test]
+    public void 今回の知識からボス問題を生成できる()
+    {
+        Configure(new FakeAIClient(TestQuestions.ValidJson));
+        manager.StartRun("薬理学");
+
+        // 知識を貯める
+        var played = TestQuestions.Valid("今回解いた問題", "薬理学");
+        played.id = "played-1";
+        manager.RegisterQuestionAnswered(played, true);
+
+        var boss = manager.GenerateBossQuestion().GetAwaiter().GetResult();
+
+        Assert.IsNotNull(boss, "ボス問題が生成されませんでした。");
+        Assert.AreEqual(QuestionRequest.DefaultChoiceCount, boss.choices.Length);
+        Assert.AreEqual("薬理学", boss.subject);
+    }
+
+    [Test]
+    public void ボス問題は通常問題の使い回しではない()
+    {
+        Configure(new FakeAIClient(TestQuestions.ValidJson));
+        manager.StartRun("薬理学");
+
+        var played = TestQuestions.Valid("今回解いた問題", "薬理学");
+        played.id = "played-1";
+        manager.RegisterQuestionAnswered(played, true);
+
+        var boss = manager.GenerateBossQuestion().GetAwaiter().GetResult();
+        Assert.AreNotEqual(played.questionText, boss.questionText);
+    }
+
+    [Test]
+    public void 生成に失敗してもボス問題はnullで返りゲームは止まらない()
+    {
+        Configure(new FakeAIClient("作れませんでした", "やはり作れません"));
+        manager.StartRun("薬理学");
+
+        var played = TestQuestions.Valid("今回解いた問題", "薬理学");
+        played.id = "played-1";
+        manager.RegisterQuestionAnswered(played, true);
+
+        Assert.IsNull(manager.GenerateBossQuestion().GetAwaiter().GetResult());
+    }
+
+    [Test]
+    public void 生成したボス問題は保存される()
+    {
+        // 企画書どおり、使っても使わなくてもDBに残す
+        Configure(new FakeAIClient(TestQuestions.ValidJson));
+        manager.StartRun("薬理学");
+
+        var played = TestQuestions.Valid("今回解いた問題", "薬理学");
+        played.id = "played-1";
+        manager.RegisterQuestionAnswered(played, true);
+
+        int before = repository.Count;
+        manager.GenerateBossQuestion().GetAwaiter().GetResult();
+
+        Assert.AreEqual(before + 1, repository.Count, "生成したボス問題が保存されていません。");
     }
 }
