@@ -8,6 +8,7 @@ public class GameFlowController : MonoBehaviour
     [SerializeField] private QuestionManager questionManager;
 
     [Header("Scene UI")]
+    [SerializeField] private GameObject modeSelectPanel;
     [SerializeField] private GameObject subjectSelectPanel;
     [SerializeField] private GameObject quizPanel;
     [SerializeField] private GameObject feedbackPanel;
@@ -21,7 +22,7 @@ public class GameFlowController : MonoBehaviour
     /// いま表示している問題。QuestionManagerから受け取ったものを保持する。
     private QuestionData currentQuestion;
 
-    private void Start() => ShowSubjectSelect();
+    private void Start() => ShowModeSelectPanel();
 
     public void SelectUnity() => StartGame("Unity");
     public void SelectGeneral() => StartGame("一般教養");
@@ -35,7 +36,16 @@ public class GameFlowController : MonoBehaviour
         ShowQuestion();
     }
 
-    private void ShowSubjectSelect()
+    #region ShowPanel
+    public void ShowModeSelectPanel()
+    {
+        modeSelectPanel.SetActive(true);
+        subjectSelectPanel.SetActive(false);
+        quizPanel.SetActive(false);
+        feedbackPanel.SetActive(false);
+        resultPanel.SetActive(false);
+    }
+    public void ShowSubjectSelect()
     {
         subjectSelectPanel.SetActive(true);
         quizPanel.SetActive(false);
@@ -43,12 +53,13 @@ public class GameFlowController : MonoBehaviour
         resultPanel.SetActive(false);
     }
 
-    private void ShowQuestion()
+    public void ShowQuestion()
     {
         subjectSelectPanel.SetActive(false);
         quizPanel.SetActive(true);
         feedbackPanel.SetActive(false);
         resultPanel.SetActive(false);
+
         // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
         currentQuestion = questionManager.GetNextQuestion();
         if (currentQuestion == null)
@@ -60,6 +71,7 @@ public class GameFlowController : MonoBehaviour
         questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
     }
 
+    #endregion
     private void Answer(int choice)
     {
         var question = currentQuestion;
@@ -82,7 +94,7 @@ public class GameFlowController : MonoBehaviour
 
     /// <summary>
     /// Reloadで同じ問題に再挑戦するときに呼ぶ。
-    /// Tomo注: Reload機能の実装時にここを使ってください。知識の二重カウントを防ぎます。
+    /// Tomo注: Reload演出とつなぐときはここを使ってください。知識の二重カウントを防ぎます。
     /// </summary>
     public void RetryCurrentQuestion()
     {
