@@ -40,7 +40,7 @@ public class GameFlowController : MonoBehaviour
     public void StartGame(string subject)
     {
         selectedSubject = subject;
-        chainManager.ResetChain();
+        //chainManager.ResetChain();
         questionManager.StartRun(subject);
         ShowQuizPanel();
     }
@@ -86,7 +86,7 @@ public class GameFlowController : MonoBehaviour
             return;
         }
 
-        questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
+        questionUI.SetData(currentQuestion);
     }
 
     public void ShowFeedbackPanel()
@@ -98,24 +98,6 @@ public class GameFlowController : MonoBehaviour
     {
         ShowPanel(PanelState.Result);
     }
-
-    //public void ShowQuestion()
-    //{
-    //    subjectSelectPanel.SetActive(false);
-    //    quizPanel.SetActive(true);
-    //    feedbackPanel.SetActive(false);
-    //    resultPanel.SetActive(false);
-
-    //    // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
-    //    currentQuestion = questionManager.GetNextQuestion();
-    //    if (currentQuestion == null)
-    //    {
-    //        ShowResult("問題がありません", "出題できる問題が見つかりませんでした。", 0);
-    //        return;
-    //    }
-
-    //    questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
-    //}
 
     #endregion
     private void Answer(int choice)
@@ -147,7 +129,7 @@ public class GameFlowController : MonoBehaviour
         if (currentQuestion == null) return;
 
         questionManager.RegisterQuestionReloaded(currentQuestion);
-        questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
+        questionUI.SetData(currentQuestion);
     }
 
     /// 関連語をフィードバック画面に出す形にする。

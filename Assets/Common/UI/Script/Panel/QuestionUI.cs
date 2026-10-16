@@ -1,29 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class QuestionUI : MonoBehaviour
 {
-    [SerializeField] private Text questionText;
-    [SerializeField] private Text subjectText;
-    [SerializeField] private Text chainText;
-    [SerializeField] private Text[] answerTexts;
-    [SerializeField] private Button[] answerButtons;
-    [SerializeField] private Button dontKnowButton;
+    [SerializeField] private TextMeshProUGUI subjectText;
+    [SerializeField] private TextMeshProUGUI questionText;
 
-    public void Show(string subject, QuestionData question, int chain, UnityEngine.Events.UnityAction<int> answerAction, UnityEngine.Events.UnityAction dontKnowAction)
+    private QuestionData questionData;
+
+    public void SetData(QuestionData _questionData)
     {
-        subjectText.text = subject;
-        questionText.text = question.questionText;
-        chainText.text = "CHAIN  " + chain;
-        for (int i = 0; i < answerButtons.Length; i++)
-        {
-            int index = i;
-            answerTexts[i].text = (i + 1) + "  " + question.choices[i];
-            answerButtons[i].onClick.RemoveAllListeners();
-            answerButtons[i].onClick.AddListener(() => answerAction(index));
-        }
-        dontKnowButton.onClick.RemoveAllListeners();
-        dontKnowButton.onClick.AddListener(dontKnowAction);
-        gameObject.SetActive(true);
+        questionData = _questionData;
+        AppryUI();
+    }
+
+    private void AppryUI()
+    {
+        subjectText.text = questionData.subject;
+        questionText.text = questionData.questionText;
+        ChoiceButtons.instance.ActiveButtons(questionData);
     }
 }

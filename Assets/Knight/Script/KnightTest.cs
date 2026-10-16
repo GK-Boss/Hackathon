@@ -14,7 +14,7 @@ public class KnightTest : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            ChoiceButtons.instance.ActiveButtons();
+            //ChoiceButtons.instance.ActiveButtons();
         }
     }
 }
