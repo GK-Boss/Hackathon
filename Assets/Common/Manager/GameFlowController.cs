@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
 public class GameFlowController : MonoBehaviour
 {
+    static public GameFlowController instance { get; private set; }
+
     [Header("Game Logic")]
     [SerializeField] private ChainManager chainManager;
     [SerializeField] private ScoreCalculator scoreCalculator;
@@ -10,6 +13,8 @@ public class GameFlowController : MonoBehaviour
     [Header("Scene UI")]
     [SerializeField] private GameObject modeSelectPanel;
     [SerializeField] private GameObject subjectSelectPanel;
+    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject quizPanel;
     [SerializeField] private GameObject feedbackPanel;
     [SerializeField] private GameObject resultPanel;
@@ -28,38 +33,51 @@ public class GameFlowController : MonoBehaviour
     public void SelectGeneral() => StartGame("一般教養");
     public void SelectProgramming() => StartGame("プログラミング");
 
-    private void StartGame(string subject)
+    private void Awake()
+    {
+        instance = this;
+    }
+    public void StartGame(string subject)
     {
         selectedSubject = subject;
         chainManager.ResetChain();
         questionManager.StartRun(subject);
-        ShowQuestion();
+        ShowQuizPanel();
     }
 
     #region ShowPanel
+    private void ShowPanel(PanelState state)
+    {
+        modeSelectPanel.SetActive(state == PanelState.ModeSelect);
+        shopPanel.SetActive(state == PanelState.Shop);
+        settingsPanel.SetActive(state == PanelState.Settings);
+        subjectSelectPanel.SetActive(state == PanelState.SubjectSelect);
+        quizPanel.SetActive(state == PanelState.Quiz);
+        feedbackPanel.SetActive(state == PanelState.Feedback);
+        resultPanel.SetActive(state == PanelState.Result);
+    }
+
     public void ShowModeSelectPanel()
     {
-        modeSelectPanel.SetActive(true);
-        subjectSelectPanel.SetActive(false);
-        quizPanel.SetActive(false);
-        feedbackPanel.SetActive(false);
-        resultPanel.SetActive(false);
+        ShowPanel(PanelState.ModeSelect);
+    }
+    public void ShowShopPanel()
+    {
+        ShowPanel(PanelState.Shop);
+    }
+
+    public void ShowSettingsPanel()
+    {
+        ShowPanel(PanelState.Settings);
     }
     public void ShowSubjectSelect()
     {
-        subjectSelectPanel.SetActive(true);
-        quizPanel.SetActive(false);
-        feedbackPanel.SetActive(false);
-        resultPanel.SetActive(false);
+        ShowPanel(PanelState.SubjectSelect);
     }
 
-    public void ShowQuestion()
+    public void ShowQuizPanel()
     {
-        subjectSelectPanel.SetActive(false);
-        quizPanel.SetActive(true);
-        feedbackPanel.SetActive(false);
-        resultPanel.SetActive(false);
-
+        ShowPanel(PanelState.Quiz);
         // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
         currentQuestion = questionManager.GetNextQuestion();
         if (currentQuestion == null)
@@ -70,6 +88,34 @@ public class GameFlowController : MonoBehaviour
 
         questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
     }
+
+    public void ShowFeedbackPanel()
+    {
+        ShowPanel(PanelState.Feedback);
+    }
+
+    public void ShowResultPanel()
+    {
+        ShowPanel(PanelState.Result);
+    }
+
+    //public void ShowQuestion()
+    //{
+    //    subjectSelectPanel.SetActive(false);
+    //    quizPanel.SetActive(true);
+    //    feedbackPanel.SetActive(false);
+    //    resultPanel.SetActive(false);
+
+    //    // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
+    //    currentQuestion = questionManager.GetNextQuestion();
+    //    if (currentQuestion == null)
+    //    {
+    //        ShowResult("問題がありません", "出題できる問題が見つかりませんでした。", 0);
+    //        return;
+    //    }
+
+    //    questionUI.Show(selectedSubject, currentQuestion, chainManager.CurrentChain, Answer, AdmitUnknown);
+    //}
 
     #endregion
     private void Answer(int choice)
@@ -88,7 +134,7 @@ public class GameFlowController : MonoBehaviour
 
         chainManager.AddCorrectAnswer();
         quizPanel.SetActive(false);
-        feedbackUI.Show("正解！  Chain + 1", "関連ワード：" + DescribeTerms(question), ShowQuestion);
+        feedbackUI.Show("正解！  Chain + 1", "関連ワード：" + DescribeTerms(question), ShowQuizPanel);
         feedbackPanel.SetActive(true);
     }
 
@@ -125,4 +171,16 @@ public class GameFlowController : MonoBehaviour
         resultUI.Show(title, detail, score, ShowSubjectSelect);
         resultPanel.SetActive(true);
     }
+}
+
+[Serializable]
+public enum PanelState
+{
+    ModeSelect,
+    Shop,
+    Settings,
+    SubjectSelect,
+    Quiz,
+    Feedback,
+    Result
 }

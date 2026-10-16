@@ -61,13 +61,24 @@ public class DirectOpenAIClient : IQuestionAIClient
 
             await request.SendAsync(cancellationToken);
 
-            if (request.result != UnityWebRequest.Result.Success)
+            //if (request.result != UnityWebRequest.Result.Success)
+            //{
+            //    // レスポンス本文にキーは含まれないのでログに出して問題ない
+            //    Debug.LogWarning("[AI] OpenAIへの問い合わせに失敗しました: " + request.error);
+            //    return null;
+            //}
+
+            if (request.result != UnityWebRequest.Result.Success)//
             {
-                // レスポンス本文にキーは含まれないのでログに出して問題ない
-                Debug.LogWarning("[AI] OpenAIへの問い合わせに失敗しました: " + request.error);
+                Debug.LogWarning(
+                    $"[AI] OpenAI通信失敗\n" +
+                    $"HTTP Status: {request.responseCode}\n" +
+                    $"Error: {request.error}\n" +
+                    $"Response: {request.downloadHandler?.text}"
+                );
+
                 return null;
             }
-
             try
             {
                 var response = JsonUtility.FromJson<ChatResponse>(request.downloadHandler.text);
