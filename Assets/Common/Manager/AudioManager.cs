@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ public class AudioManager : MonoBehaviour
     //[SerializeField] private AudioSource buildBGS;
     //private float buildBGS_Volume;
     //private float buildBGS_PastVolume;
+    [Header("BGM")]
+    [SerializeField] private AudioSource bgm;
 
     [Header("SE")]
     [SerializeField] private List<AudioSource> se;
@@ -42,9 +45,37 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    public void ChangeBGM()
+    public void ChangeBGM(AudioData data)
     {
+        StartCoroutine(BGM_Coroutin(data));
+    }
 
+    private IEnumerator BGM_Coroutin(AudioData data)
+    {
+        float progress = 0;
+
+        while (progress < 1)
+        {
+            bgm.volume = 1.0f - progress;
+            progress += Time.deltaTime;
+            yield return null;
+        }
+
+        bgm.volume = 0;
+        progress = 0;
+        yield return null;
+
+            bgm.clip = data.audioClip;
+            bgm.Play();
+
+            while (progress < 1)
+            {
+                bgm.volume = progress;
+                progress += Time.deltaTime;
+                yield return null;
+            }
+
+        bgm.volume = 1;
     }
 
     //public void PlayBuildBGS()

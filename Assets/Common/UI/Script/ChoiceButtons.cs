@@ -8,6 +8,8 @@ public class ChoiceButtons : MonoBehaviour
 
     [SerializeField] private ChoiceButton[] choiceButtons;
 
+    private ChoiceButton currentChoiceButton;
+
     private void Awake()
     {
         if (instance == null)
@@ -26,6 +28,8 @@ public class ChoiceButtons : MonoBehaviour
     }
     public IEnumerator ActiveButtonsCoroutine(QuestionData questionData)
     {
+        currentChoiceButton = null;
+
         foreach (ChoiceButton button in choiceButtons)
         {
             button.NonActive();
@@ -52,16 +56,20 @@ public class ChoiceButtons : MonoBehaviour
 
     public void SelectButton(ChoiceButton cb)
     {
-        foreach (ChoiceButton button in choiceButtons)
+        if (cb == currentChoiceButton)
         {
-            if (button == cb)
-            {
-                //button.OnClick();
-            }
-            else
-            {
+            currentChoiceButton = null;
+
+            foreach (ChoiceButton button in choiceButtons)
                 button.OffClick();
-            }
+        }
+        else
+        {
+            currentChoiceButton = cb;
+
+            foreach (ChoiceButton button in choiceButtons)
+                if (button != currentChoiceButton)
+                    button.OffClick();
         }
     }
 }
