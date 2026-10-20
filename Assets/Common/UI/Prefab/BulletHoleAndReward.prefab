@@ -306,3 +306,4 @@ MonoBehaviour:
   rewardIcon1: {fileID: 2070697575210601917}
   rewardIcon2: {fileID: 0}
   chain: {fileID: 1367627215349775782, guid: 3668aa8922d8c6345a3140805f0a919e, type: 3}
+  image: {fileID: 1119613279830414915}

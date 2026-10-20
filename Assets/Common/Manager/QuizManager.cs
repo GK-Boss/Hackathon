@@ -4,18 +4,19 @@ public class QuizManager : MonoBehaviour
 {
     public static QuizManager instance;
 
+    [SerializeField] private QuestionUI questionUI;
     public static bool success = false;
 
-    //本当はこれで演出関連をまとめたかった
+    private QuestionData currentQuestion;
 
-    public void FinishSelect() // 使ってない
+    private void Awake()
     {
-
+        instance = this;
     }
-
-    public void FinishReward()
+    public void ChangeQuestion()
     {
-
+        currentQuestion = QuestionManager.instance.GetNextQuestion();
+        questionUI.SetData(currentQuestion);
     }
 }
 

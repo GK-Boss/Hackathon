@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameFlowController : MonoBehaviour
 {
-    static public GameFlowController instance { get; private set; }
+    static public GameFlowController instance;
 
     [Header("Game Logic")]
     [SerializeField] private ChainManager chainManager;
@@ -78,15 +78,7 @@ public class GameFlowController : MonoBehaviour
     public void ShowQuizPanel()
     {
         ShowPanel(PanelState.Quiz);
-        // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
-        currentQuestion = questionManager.GetNextQuestion();
-        if (currentQuestion == null)
-        {
-            ShowResult("問題がありません", "出題できる問題が見つかりませんでした。", 0);
-            return;
-        }
-
-        questionUI.SetData(currentQuestion);
+        QuizManager.instance.ChangeQuestion();
     }
 
     public void ShowFeedbackPanel()

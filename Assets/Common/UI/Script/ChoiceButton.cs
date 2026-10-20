@@ -1,7 +1,7 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ChoiceButton : MonoBehaviour
 {
@@ -43,6 +43,9 @@ public class ChoiceButton : MonoBehaviour
     {
         text.text = _text;
         trueChoice = isTrue;
+
+        imageTransform.anchoredPosition = pos;
+        textTransform.anchoredPosition = pos + textOffset;
     }
     public void Active()
     {
@@ -160,6 +163,11 @@ public class ChoiceButton : MonoBehaviour
         image.color = new Color(1f, 1f, 1f, 0f);
         text.color = new Color(1f, 1f, 1f, 0f);
         moveCoroutine = null;
+    }
+
+    public void ResetPos()
+    {
+
     }
 
     public void OnClick()

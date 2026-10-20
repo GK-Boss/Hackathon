@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class KnightTest : MonoBehaviour
 {
+    [SerializeField] private QuizManager quizManager;
+    
     [SerializeField] private GameObject prefab;
     [SerializeField] private Transform parent;
 
@@ -18,7 +20,7 @@ public class KnightTest : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            bc.Active();
+            quizManager.ChangeQuestion();
             //ChoiceButtons.instance.ActiveButtons();
         }
 

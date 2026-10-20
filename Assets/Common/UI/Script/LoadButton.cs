@@ -26,7 +26,7 @@ public class LoadButton : MonoBehaviour
         defaultPos = bulletImage.GetComponent<RectTransform>().anchoredPosition;
     }
 
-    private void OnEnable()
+    public void ResetUI()
     {
         canClick = true;
         lTsF = true;

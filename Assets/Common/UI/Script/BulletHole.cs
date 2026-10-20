@@ -4,10 +4,11 @@ using UnityEngine.UI;
 
 public class BulletHole : MonoBehaviour
 {
-    private GameObject questionPanel;
     [SerializeField] private RewardIcon rewardIcon1;
     [SerializeField] private RewardIcon rewardIcon2;
     [SerializeField] private GameObject chain;
+
+    [SerializeField] private Image image;
     private RectTransform rt;
 
     private void Awake()
@@ -16,31 +17,33 @@ public class BulletHole : MonoBehaviour
     }
     private void Start()
     {
-        questionPanel = GameObject.Find("QuestionPanel");
-        rewardIcon2 = GameObject.Find("RewardIcon2").GetComponent<RewardIcon>();
-        rewardIcon2.NonActive();
+        rewardIcon2 = GameObject.Find("RewardIcon").GetComponent<RewardIcon>();
     }
     public void Init(bool success)
     {
         rt.anchoredPosition -= GetComponent<RectTransform>().anchoredPosition;
-            StartCoroutine(Succsess());
+            StartCoroutine(Success());
 
-        //if (success)
-        //    StartCoroutine(Succsess());
-        //else
-        //    StartCoroutine(Fail());
+        if (success)
+            StartCoroutine(Success());
+        else
+            StartCoroutine(Fail());
     }
 
-    public IEnumerator Succsess()
+    public IEnumerator Success()
     {
         yield return new WaitForSeconds(2);
-        questionPanel.SetActive(false);
+        QuestionPanel.instance.NonActive();
         rewardIcon2.Active();
-        Instantiate(chain, transform.position, Quaternion.Euler(0, 0, Random.Range(0, 180)), GameObject.Find("Chains").transform);
+        Instantiate(chain, transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)), GameObject.Find("Chains").transform);
+        image.enabled = false;
+        yield return new WaitForSeconds(2);
+        QuizManager.instance.ChangeQuestion();
     }
 
     public IEnumerator Fail()
     {
-        yield return null;
+        yield return new WaitForSeconds(2);
+        QuestionPanel.instance.NonActive();
     }
 }

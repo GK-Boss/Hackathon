@@ -26,11 +26,6 @@ public class BulletCircle : MonoBehaviour
         circleRectTransform = GetComponent<RectTransform>();
     }
 
-    private void OnEnable()
-    {
-        image.enabled = false;
-    }
-
     public void Active()
     {
         image.enabled = true;
@@ -42,6 +37,7 @@ public class BulletCircle : MonoBehaviour
     public void NonActive()
     {
         image.enabled = false;
+        move = false;
     }
 
     private IEnumerator ActiveCoroutin()
@@ -80,6 +76,6 @@ public class BulletCircle : MonoBehaviour
 
     public void Shot()
     {
-        Instantiate(bulletHole, transform.position/*GetComponent<RectTransform>().anchoredPosition*/, Quaternion.identity, bulletHole_Parent).Init(QuizManager.success);
+        Instantiate(bulletHole, transform.position, Quaternion.identity, bulletHole_Parent).Init(QuizManager.success);
     }
 }
