@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEditor;
 
 public class ChoiceButtons : MonoBehaviour
 {
@@ -8,7 +10,7 @@ public class ChoiceButtons : MonoBehaviour
 
     [SerializeField] private ChoiceButton[] choiceButtons;
 
-    private ChoiceButton currentChoiceButton;
+    [HideInInspector] public ChoiceButton currentChoiceButton;
 
     private void Awake()
     {
@@ -71,5 +73,12 @@ public class ChoiceButtons : MonoBehaviour
                 if (button != currentChoiceButton)
                     button.OffClick();
         }
+    }
+
+    public IEnumerator Load()
+    {
+        if (!currentChoiceButton) yield break;
+
+        yield return StartCoroutine(currentChoiceButton.FourthMove());
     }
 }

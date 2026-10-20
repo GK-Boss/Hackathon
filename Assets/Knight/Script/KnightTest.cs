@@ -5,6 +5,7 @@ public class KnightTest : MonoBehaviour
     [SerializeField] private GameObject prefab;
     [SerializeField] private Transform parent;
 
+    [SerializeField] private BulletCircle bc;
     [SerializeField] private AudioData bgm1;
     [SerializeField] private AudioData bgm2;
 
@@ -17,6 +18,7 @@ public class KnightTest : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
+            bc.Active();
             //ChoiceButtons.instance.ActiveButtons();
         }
 
