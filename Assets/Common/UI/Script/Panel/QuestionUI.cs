@@ -8,7 +8,7 @@ public class QuestionUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI subjectText;
     [SerializeField] private TextMeshProUGUI questionText;
     [SerializeField] private QuestionPanel questionPanel;
-    [SerializeField] private Image rewardIcon;
+    [SerializeField] private RewardIcon rewardIcon;
     [SerializeField] private BulletCircle bulletCircle;
     [SerializeField] private ChoiceButtons choiceButtons;
     [SerializeField] private LoadButton loadButton;
@@ -26,7 +26,7 @@ public class QuestionUI : MonoBehaviour
     {
         //chains.ResetUI();
         questionPanel.ResetUI();
-        rewardIcon.enabled = false;
+        rewardIcon.NonActive();
         bulletCircle.NonActive();
         loadButton.ResetUI();
     }

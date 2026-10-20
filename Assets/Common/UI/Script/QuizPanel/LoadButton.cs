@@ -32,6 +32,7 @@ public class LoadButton : MonoBehaviour
         lTsF = true;
         StopAllCoroutines();
         bulletImage.GetComponent<RectTransform>().anchoredPosition = defaultPos;
+        bulletImage.fillAmount = 1f;
         bulletImage.enabled = false;
         loadText.color = new(loadText.color.r, loadText.color.g, loadText.color.b, 1);
         shotText.color = new(shotText.color.r, shotText.color.g, shotText.color.b, 0);
@@ -51,7 +52,10 @@ public class LoadButton : MonoBehaviour
 
     public IEnumerator LoadCurrentBullet()
     {
-        QuizManager.success = ChoiceButtons.instance.currentChoiceButton.trueChoice;
+        if (ChoiceButtons.instance.currentChoiceButton)
+            QuizManager.success = ChoiceButtons.instance.currentChoiceButton.trueChoice;
+        else
+            QuizManager.giveUp = true;
 
         bulletCircle.Active();
 

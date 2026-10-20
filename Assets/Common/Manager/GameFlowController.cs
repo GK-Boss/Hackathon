@@ -22,6 +22,10 @@ public class GameFlowController : MonoBehaviour
     [SerializeField] private FeedbackUI feedbackUI;
     [SerializeField] private ResultUI resultUI;
 
+    [Header("BGM")]
+    [SerializeField] private AudioData selectBGM;
+    [SerializeField] private AudioData quizBGM;
+
     private string selectedSubject;
 
     /// いま表示している問題。QuestionManagerから受け取ったものを保持する。
@@ -55,6 +59,8 @@ public class GameFlowController : MonoBehaviour
         quizPanel.SetActive(state == PanelState.Quiz);
         feedbackPanel.SetActive(state == PanelState.Feedback);
         resultPanel.SetActive(state == PanelState.Result);
+
+        AudioManager.instance.ChangeBGM(state == PanelState.Quiz ? quizBGM : selectBGM);
     }
 
     public void ShowModeSelectPanel()

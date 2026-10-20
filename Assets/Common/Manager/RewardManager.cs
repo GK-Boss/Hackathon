@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class RewardManager : MonoBehaviour
 {
+    static public RewardManager instance;
+
     [Header("デフォルト")]
     public float rareRatio;
     public float challengeRatio;
@@ -15,10 +17,19 @@ public class RewardManager : MonoBehaviour
     public int reloadUpValue;
     public int reloadUpNum;
 
+    private void Awake()
+    {
+        instance = this;
+    }
     public RewardType SelectRewardType()
     {
         float randomNum = Random.value;
-        return RewardType.Chain_Normal;
+        if (challengeRatio > randomNum)
+            return RewardType.ReloadChallenge;
+        else if (challengeRatio + rareRatio > randomNum)
+            return RewardType.Chain_Rare;
+        else
+            return RewardType.Chain_Normal;
     }
 
     public bool Reload()

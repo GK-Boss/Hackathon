@@ -6,6 +6,8 @@ public class QuizManager : MonoBehaviour
 
     [SerializeField] private QuestionUI questionUI;
     public static bool success = false;
+    public static bool giveUp = false;
+    public static RewardType reward;
 
     private QuestionData currentQuestion;
 
@@ -17,6 +19,8 @@ public class QuizManager : MonoBehaviour
     {
         currentQuestion = QuestionManager.instance.GetNextQuestion();
         questionUI.SetData(currentQuestion);
+        reward = RewardManager.instance.SelectRewardType();
+        Debug.Log(reward);
     }
 }
 

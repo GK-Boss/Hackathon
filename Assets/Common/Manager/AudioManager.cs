@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     [Header("SE")]
     [SerializeField] private List<AudioSource> se;
 
+    private AudioData currentBGM;
     private void Awake()
     {
         instance = this;
@@ -47,6 +48,7 @@ public class AudioManager : MonoBehaviour
 
     public void ChangeBGM(AudioData data)
     {
+        if (currentBGM == data) return;
         StartCoroutine(BGM_Coroutin(data));
     }
 
@@ -54,28 +56,31 @@ public class AudioManager : MonoBehaviour
     {
         float progress = 0;
 
-        while (progress < 1)
+        if (currentBGM)
         {
-            bgm.volume = 1.0f - progress;
-            progress += Time.deltaTime;
-            yield return null;
+            while (progress < 1)
+            {
+                bgm.volume = currentBGM.volume * (1.0f - progress);
+                progress += Time.deltaTime;
+                yield return null;
+            }
         }
-
         bgm.volume = 0;
         progress = 0;
         yield return null;
 
-            bgm.clip = data.audioClip;
-            bgm.Play();
+        currentBGM = data;
+        bgm.clip = data.audioClip;
+        bgm.Play();
 
-            while (progress < 1)
-            {
-                bgm.volume = progress;
-                progress += Time.deltaTime;
-                yield return null;
-            }
+        while (progress < 1)
+        {
+            bgm.volume = currentBGM.volume * progress;
+            progress += Time.deltaTime;
+            yield return null;
+        }
 
-        bgm.volume = 1;
+        bgm.volume = currentBGM.volume;
     }
 
     //public void PlayBuildBGS()

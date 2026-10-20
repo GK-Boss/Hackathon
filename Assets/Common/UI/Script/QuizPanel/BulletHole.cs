@@ -21,6 +21,7 @@ public class BulletHole : MonoBehaviour
     }
     public void Init(bool success)
     {
+        rewardIcon1.Active();
         rt.anchoredPosition -= GetComponent<RectTransform>().anchoredPosition;
             StartCoroutine(Success());
 
