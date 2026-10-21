@@ -8,8 +8,6 @@ public class KnightTest : MonoBehaviour
     [SerializeField] private Transform parent;
 
     [SerializeField] private BulletCircle bc;
-    [SerializeField] private AudioData bgm1;
-    [SerializeField] private AudioData bgm2;
 
     private void Update()
     {
@@ -21,18 +19,6 @@ public class KnightTest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             quizManager.ChangeQuestion();
-            //ChoiceButtons.instance.ActiveButtons();
         }
-
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            AudioManager.instance.ChangeBGM(bgm1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            AudioManager.instance.ChangeBGM(bgm2);
-        }
-
     }
 }

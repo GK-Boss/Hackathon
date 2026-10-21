@@ -36,8 +36,29 @@ public class BulletHole : MonoBehaviour
         yield return new WaitForSeconds(2);
         QuestionPanel.instance.NonActive();
         rewardIcon2.Active();
-        Instantiate(chain, transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)), GameObject.Find("Chains").transform);
         image.enabled = false;
+
+        switch (QuizManager.reward)
+        {
+            case RewardType.Chain_Normal:
+                GameObject.Find("Chains").GetComponent<Chains>().GenerateChain_Normal(transform.position);
+                break;
+            case RewardType.Chain_Rare:
+                yield return StartCoroutine(GameObject.Find("Chains").GetComponent<Chains>().GenerateChain_Rare(transform.position));
+                break;
+            case RewardType.Chain_Boss:
+                GameObject.Find("Chains").GetComponent<Chains>().GenerateChain_Normal(transform.position);
+                break;
+            case RewardType.ReloadChallenge:
+                GameObject.Find("Chains").GetComponent<Chains>().GenerateChain_Normal(transform.position);
+                break;
+            case RewardType.Reload:
+                GameObject.Find("Chains").GetComponent<Chains>().GenerateChain_Normal(transform.position);
+                break;
+            case RewardType.ReloadRush:
+                GameObject.Find("Chains").GetComponent<Chains>().GenerateChain_Normal(transform.position);
+                break;
+        }
         yield return new WaitForSeconds(2);
         QuizManager.instance.ChangeQuestion();
     }

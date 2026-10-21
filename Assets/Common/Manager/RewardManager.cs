@@ -32,8 +32,13 @@ public class RewardManager : MonoBehaviour
             return RewardType.Chain_Normal;
     }
 
+    public RewardType SelectReward_Challenge()
+    {
+        return Random.value < 0.5f ? RewardType.Reload : RewardType.ReloadRush;
+    }
+
     public bool Reload()
     {
-        return Random.value <= reloadRatio ? true : false;
+        return Random.value <= reloadRatio;
     }
 }
