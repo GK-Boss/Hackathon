@@ -46,16 +46,18 @@ public class CommonSceneWiringTests
     [Test]
     public void 選択肢のUIが想定の数だけ並んでいる()
     {
-        var questionUI = FindInScene<QuestionUI>();
-        Assert.IsNotEmpty(questionUI, "SceneにQuestionUIがありません。");
+        // Tomo注: 選択肢ボタンの管理は ChoiceButtons に移りました（UIの作り替えに追従）。
+        //         ChoiceButtons は選択肢を6個前提でシャッフルするので、
+        //         ボタンの数がずれていると実行時に範囲外アクセスで落ちます。
+        var choiceButtons = FindInScene<ChoiceButtons>();
+        Assert.IsNotEmpty(choiceButtons, "SceneにChoiceButtonsがありません。");
 
-        foreach (var ui in questionUI)
+        foreach (var buttons in choiceButtons)
         {
-            var serialized = new SerializedObject(ui);
-            Assert.AreEqual(QuestionRequest.DefaultChoiceCount, serialized.FindProperty("answerTexts").arraySize,
-                "answerTexts の数が QuestionRequest.DefaultChoiceCount（6）と違います。");
-            Assert.AreEqual(QuestionRequest.DefaultChoiceCount, serialized.FindProperty("answerButtons").arraySize,
-                "answerButtons の数が QuestionRequest.DefaultChoiceCount（6）と違います。");
+            var property = new SerializedObject(buttons).FindProperty("choiceButtons");
+            Assert.IsNotNull(property, "ChoiceButtons.choiceButtons が見つかりません。UIの作りが変わった可能性があります。");
+            Assert.AreEqual(QuestionRequest.DefaultChoiceCount, property.arraySize,
+                "選択肢ボタンの数が " + QuestionRequest.DefaultChoiceCount + " 個ではありません。実行時に落ちます。");
         }
     }
 

@@ -25,6 +25,9 @@
 | 2026-10-16 | READMEのAI連携手順が、存在しない操作を指していた（`Setup Question System` を実行しても `AIClientSettings.asset` はできない） | 設定アセットを作るメニューは `Create AI Client Settings`（`OpenAISettingsCreator`）で、`Setup Question System` はSceneの参照を直すだけ。メニューを2つに分けたときREADMEを直さなかった。手順どおりにやっても失敗するため、チーム内で「ファイルが見つからない」と探す時間が発生した | READMEを `Create AI Client Settings` に修正し、配布用の手順書 `AI_SETUP.md` を追加した | 解決 |
 | 2026-10-16 | プル後、プロジェクトがコンパイルできなくなった（`QuestionSystemDebugTest.cs(35,30): error CS1009: Unrecognized escape sequence`）。Unityが起動時にSafe Modeに入る | 新規追加された `QuestionSystemDebugTest.cs` がShift-JISで保存されていた。Shift-JISの日本語は2バイト目に `0x5C`（バックスラッシュ）を含むことがあり、UTF-8として読むと文字列リテラル内の不正なエスケープになる。**コミットした本人の環境では既存のキャッシュで動くため気づけない** | `iconv -f CP932 -t UTF-8` で変換（SHIFT_JIS指定だと `0x5C` が `¥` になり `\n` が壊れるのでCP932を使う）。Consoleの日本語が正しく出ることを再生して確認 | 解決 |
 | 2026-10-16 | 画面遷移の2件（タイトルの重なり／分野ボタンが効かない）が、プル後も直っていないことを確認 | `ebb6ef8`「試験してみた」が触ったのはデバッグ用スクリプトとシーンへのその配置のみで、`SubjectButton.cs` と `GameFlowController` の画面制御は未着手。`SubjectButton` は `subjectName` を保持するだけで `GameFlowController` を呼んでいない | 未対応（Knightさん担当）。再生して再現を確認済み | 未解決 |
+| 2026-10-22 | `ChoiceButtons.cs` に `using UnityEditor;` が入っている（ランタイムのスクリプト） | `UnityEditor` 名前空間はエディタ専用で、プレイヤービルドには含まれない。**iOS/Android/WebGLのビルドがコンパイルエラーで落ちる。** Editor上では動くので気づけない | 未対応（Knightさん担当ファイル）。1行消すだけで直る | 未解決 |
+| 2026-10-22 | `QuizManager.cs` の日本語コメントとログがすべて文字化けしている | Shift-JISで保存されている。文字化けの4件目で、同じ原因が繰り返されている。今回はエスケープ事故にはならなかったが、ログが読めずデバッグの手がかりを失う | 未対応（Knightさん担当ファイル）。`iconv -f CP932 -t UTF-8` で変換できる。**エディタの既定文字コードをUTF-8にしないと再発し続ける** | 未解決 |
+| 2026-10-22 | 選択肢UIの作り替えで `CommonSceneWiringTests` が NullReferenceException で落ちた | `QuestionUI` の `answerTexts`/`answerButtons` が廃止され、選択肢の管理が `ChoiceButtons` に移った。テストが古い構造を見ていた | テストを `ChoiceButtons.choiceButtons` の個数検査に書き換えた。6個前提でシャッフルしているので、数がずれると実行時に範囲外アクセスで落ちる | 解決 |
 
 ---
 
