@@ -434,6 +434,220 @@
                 }
             ],
             "verified": false
+        },
+        {
+            "id": "bio-001",
+            "subject": "生物学",
+            "difficulty": 1,
+            "questionText": "細胞内でATPを多く合成する細胞小器官は？",
+            "choices": [
+                "ミトコンドリア",
+                "リボソーム",
+                "ゴルジ体",
+                "リソソーム",
+                "中心体",
+                "液胞"
+            ],
+            "correctIndex": 0,
+            "explanation": "ミトコンドリアは内膜で電子伝達系を行い、ATPを合成します。そのためエネルギー産生の場と呼ばれます。",
+            "relatedTerms": [
+                {
+                    "term": "ミトコンドリア",
+                    "relevance": 5
+                },
+                {
+                    "term": "ATP",
+                    "relevance": 4
+                },
+                {
+                    "term": "細胞小器官",
+                    "relevance": 4
+                },
+                {
+                    "term": "細胞呼吸",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "bio-002",
+            "subject": "生物学",
+            "difficulty": 1,
+            "questionText": "細胞内でタンパク質が合成される場所は？",
+            "choices": [
+                "リボソーム",
+                "ミトコンドリア",
+                "核小体",
+                "ゴルジ体",
+                "リソソーム",
+                "中心体"
+            ],
+            "correctIndex": 0,
+            "explanation": "リボソームはmRNAの情報を読み取り、アミノ酸をつないでタンパク質を合成します。この過程を翻訳といいます。",
+            "relatedTerms": [
+                {
+                    "term": "リボソーム",
+                    "relevance": 5
+                },
+                {
+                    "term": "翻訳",
+                    "relevance": 4
+                },
+                {
+                    "term": "細胞小器官",
+                    "relevance": 4
+                },
+                {
+                    "term": "タンパク質",
+                    "relevance": 3
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "bio-003",
+            "subject": "生物学",
+            "difficulty": 1,
+            "questionText": "DNAの二重らせんでアデニンと塩基対をつくるのは？",
+            "choices": [
+                "チミン",
+                "グアニン",
+                "シトシン",
+                "ウラシル",
+                "アラニン",
+                "リシン"
+            ],
+            "correctIndex": 0,
+            "explanation": "DNAではアデニンとチミン、グアニンとシトシンが対になります。ウラシルはRNAでチミンの代わりに使われます。",
+            "relatedTerms": [
+                {
+                    "term": "DNA",
+                    "relevance": 5
+                },
+                {
+                    "term": "塩基対",
+                    "relevance": 5
+                },
+                {
+                    "term": "相補性",
+                    "relevance": 3
+                },
+                {
+                    "term": "核酸",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "bio-004",
+            "subject": "生物学",
+            "difficulty": 1,
+            "questionText": "DNAの塩基配列をmRNAに写し取る過程は？",
+            "choices": [
+                "転写",
+                "翻訳",
+                "複製",
+                "修復",
+                "組換え",
+                "分裂"
+            ],
+            "correctIndex": 0,
+            "explanation": "転写はDNAの情報をmRNAへ写す過程です。そのmRNAをもとにタンパク質を作る過程が翻訳です。",
+            "relatedTerms": [
+                {
+                    "term": "転写",
+                    "relevance": 5
+                },
+                {
+                    "term": "mRNA",
+                    "relevance": 4
+                },
+                {
+                    "term": "DNA",
+                    "relevance": 4
+                },
+                {
+                    "term": "翻訳",
+                    "relevance": 3
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "bio-005",
+            "subject": "生物学",
+            "difficulty": 1,
+            "questionText": "細胞膜の基本構造をつくる主成分は？",
+            "choices": [
+                "リン脂質",
+                "セルロース",
+                "デンプン",
+                "キチン",
+                "グリコーゲン",
+                "ケラチン"
+            ],
+            "correctIndex": 0,
+            "explanation": "細胞膜はリン脂質が二重層をつくって構成され、そこに膜タンパク質が埋まっています。親水性の頭部が外側を向きます。",
+            "relatedTerms": [
+                {
+                    "term": "細胞膜",
+                    "relevance": 5
+                },
+                {
+                    "term": "リン脂質",
+                    "relevance": 5
+                },
+                {
+                    "term": "脂質二重層",
+                    "relevance": 3
+                },
+                {
+                    "term": "細胞",
+                    "relevance": 2
+                },
+                {
+                    "term": "タンパク質",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "bio-006",
+            "subject": "生物学",
+            "difficulty": 2,
+            "questionText": "酵素が作用して変化させる相手の物質を何という？",
+            "choices": [
+                "基質",
+                "補酵素",
+                "産物",
+                "触媒",
+                "受容体",
+                "抗体"
+            ],
+            "correctIndex": 0,
+            "explanation": "酵素が作用する相手の物質を基質といいます。酵素は活性部位で基質と結合し、反応を進めます。",
+            "relatedTerms": [
+                {
+                    "term": "酵素",
+                    "relevance": 5
+                },
+                {
+                    "term": "基質",
+                    "relevance": 5
+                },
+                {
+                    "term": "活性部位",
+                    "relevance": 3
+                },
+                {
+                    "term": "タンパク質",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
         }
     ]
 }
