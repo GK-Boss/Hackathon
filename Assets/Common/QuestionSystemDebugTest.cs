@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// AI’ÊM‚Ì“®ìŠm”F—pB
-/// ŠJ”­—p‚ÌDirectOpenAIƒ‚[ƒh‚Å–â‘è‚ğ1–â¶¬‚µAŒ‹‰Ê‚ğŒŸØ‚·‚éB
+/// AIé€šä¿¡ã®å‹•ä½œç¢ºèªç”¨ã€‚
+/// é–‹ç™ºç”¨ã®DirectOpenAIãƒ¢ãƒ¼ãƒ‰ã§å•é¡Œã‚’1å•ç”Ÿæˆã—ã€çµæœã‚’æ¤œè¨¼ã™ã‚‹ã€‚
 /// </summary>
 public class QuestionSystemDebugTest : MonoBehaviour
 {
-    [Header("AI¶¬ƒeƒXƒg")]
-    [SerializeField] private string subject = "–ò—Šw";
-    [SerializeField] private string relatedTerm = "ƒAƒhƒŒƒiƒŠƒ“";
+    [Header("AIç”Ÿæˆãƒ†ã‚¹ãƒˆ")]
+    [SerializeField] private string subject = "è–¬ç†å­¦";
+    [SerializeField] private string relatedTerm = "ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³";
     [SerializeField, Range(1, 4)] private int difficulty = 1;
 
     private CancellationTokenSource cancellation;
@@ -27,38 +27,38 @@ public class QuestionSystemDebugTest : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            Debug.Log("[AIƒeƒXƒg] ƒeƒXƒg‚ğƒLƒƒƒ“ƒZƒ‹‚µ‚Ü‚µ‚½B");
+            Debug.Log("[AIãƒ†ã‚¹ãƒˆ] ãƒ†ã‚¹ãƒˆã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¾ã—ãŸã€‚");
         }
         catch (Exception e)
         {
             Debug.LogError(
-                "[AIƒeƒXƒg] —\Šú‚µ‚È‚¢ƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B\n" + e
+                "[AIãƒ†ã‚¹ãƒˆ] äºˆæœŸã—ãªã„ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚\n" + e
             );
         }
     }
 
     private async Task RunTestAsync(CancellationToken token)
     {
-        Debug.Log("[AIƒeƒXƒg] ŠJn");
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] é–‹å§‹");
 
-        // 1. Ú‘±İ’è‚ğ“Ç‚İ‚Ş
+        // 1. æ¥ç¶šè¨­å®šã‚’èª­ã¿è¾¼ã‚€
         AIClientSettings settings = AIClientSettings.LoadOrNull();
 
         if (settings == null)
         {
             Debug.LogError(
-                "[AIƒeƒXƒg] AIClientSettings‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB\n" +
-                "Assets/Konishi/Resources/AIClientSettings.asset ‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+                "[AIãƒ†ã‚¹ãƒˆ] AIClientSettingsãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚\n" +
+                "Assets/Konishi/Resources/AIClientSettings.asset ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
             );
             return;
         }
 
-        // 2. ŠJ”­—p‚Ì’¼Ú’ÊMƒ‚[ƒh‚©Šm”F
+        // 2. é–‹ç™ºç”¨ã®ç›´æ¥é€šä¿¡ãƒ¢ãƒ¼ãƒ‰ã‹ç¢ºèª
         if (settings.mode != AIClientSettings.Mode.DirectOpenAI_DevelopmentOnly)
         {
             Debug.LogError(
-                "[AIƒeƒXƒg] DirectOpenAI_DevelopmentOnly‚Éİ’è‚µ‚Ä‚­‚¾‚³‚¢B\n" +
-                "Œ»İ‚Ìƒ‚[ƒh: " + settings.mode
+                "[AIãƒ†ã‚¹ãƒˆ] DirectOpenAI_DevelopmentOnlyã«è¨­å®šã—ã¦ãã ã•ã„ã€‚\n" +
+                "ç¾åœ¨ã®ãƒ¢ãƒ¼ãƒ‰: " + settings.mode
             );
             return;
         }
@@ -66,30 +66,30 @@ public class QuestionSystemDebugTest : MonoBehaviour
         if (!settings.IsConfigured)
         {
             Debug.LogError(
-                "[AIƒeƒXƒg] OpenAI APIƒL[‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB\n" +
-                "Inspector‚ÌAIClientSettings‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+                "[AIãƒ†ã‚¹ãƒˆ] OpenAI APIã‚­ãƒ¼ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚\n" +
+                "Inspectorã®AIClientSettingsã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
             );
             return;
         }
 
-        // 3. Šù‘¶‚Ì’ÊMƒNƒ‰ƒX‚Æ¶¬ƒNƒ‰ƒX‚ğ—˜—p‚·‚é
+        // 3. æ—¢å­˜ã®é€šä¿¡ã‚¯ãƒ©ã‚¹ã¨ç”Ÿæˆã‚¯ãƒ©ã‚¹ã‚’åˆ©ç”¨ã™ã‚‹
         IQuestionAIClient client = settings.CreateClient();
 
         if (client == null || !client.IsAvailable)
         {
-            Debug.LogError("[AIƒeƒXƒg] AIƒNƒ‰ƒCƒAƒ“ƒg‚ğ—˜—p‚Å‚«‚Ü‚¹‚ñB");
+            Debug.LogError("[AIãƒ†ã‚¹ãƒˆ] AIã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚’åˆ©ç”¨ã§ãã¾ã›ã‚“ã€‚");
             return;
         }
 
         var generator = new AIQuestionGenerator(client, true);
 
-        Debug.Log("[AIƒeƒXƒg] OpenAI‚Ö‚ÌƒŠƒNƒGƒXƒg‚ğŠJn‚µ‚Ü‚·B");
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] OpenAIã¸ã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’é–‹å§‹ã—ã¾ã™ã€‚");
         Debug.Log(
-            $"[AIƒeƒXƒg] •ª–ì: {subject} / ŠÖ˜AŒê: {relatedTerm} / “ïˆÕ“x: {difficulty}"
+            $"[AIãƒ†ã‚¹ãƒˆ] åˆ†é‡: {subject} / é–¢é€£èª: {relatedTerm} / é›£æ˜“åº¦: {difficulty}"
         );
 
-        // 4. AI‚É–â‘è‚ğ1–â¶¬‚³‚¹‚é
-        // Œ`®ŒŸØ‚É¸”s‚µ‚½ê‡AGenerator‘¤‚ÅC³ˆË—Š‚ğ1‰ñs‚¤‚±‚Æ‚ª‚ ‚è‚Ü‚·B
+        // 4. AIã«å•é¡Œã‚’1å•ç”Ÿæˆã•ã›ã‚‹
+        // å½¢å¼æ¤œè¨¼ã«å¤±æ•—ã—ãŸå ´åˆã€Generatorå´ã§ä¿®æ­£ä¾é ¼ã‚’1å›è¡Œã†ã“ã¨ãŒã‚ã‚Šã¾ã™ã€‚
         QuestionData question = await generator.GenerateQuestion(
             subject,
             relatedTerm,
@@ -103,13 +103,13 @@ public class QuestionSystemDebugTest : MonoBehaviour
         if (question == null)
         {
             Debug.LogError(
-                "[AIƒeƒXƒg] –â‘è‚ğ¶¬‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B\n" +
-                "Consoleã•”‚Ì[AI]E[Question]ƒƒO‚àŠm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+                "[AIãƒ†ã‚¹ãƒˆ] å•é¡Œã‚’ç”Ÿæˆã§ãã¾ã›ã‚“ã§ã—ãŸã€‚\n" +
+                "Consoleä¸Šéƒ¨ã®[AI]ãƒ»[Question]ãƒ­ã‚°ã‚‚ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
             );
             return;
         }
 
-        // 5. ¶¬Œ‹‰Ê‚ğŒŸØ‚·‚é
+        // 5. ç”Ÿæˆçµæœã‚’æ¤œè¨¼ã™ã‚‹
         if (!AIQuestionValidator.Validate(
                 question,
                 QuestionRequest.DefaultChoiceCount,
@@ -117,24 +117,24 @@ public class QuestionSystemDebugTest : MonoBehaviour
                 null,
                 out string reason))
         {
-            Debug.LogError("[AIƒeƒXƒg] –â‘è‚ÌŒŸØ‚É¸”s‚µ‚Ü‚µ‚½: " + reason);
+            Debug.LogError("[AIãƒ†ã‚¹ãƒˆ] å•é¡Œã®æ¤œè¨¼ã«å¤±æ•—ã—ã¾ã—ãŸ: " + reason);
             return;
         }
 
-        // 6. Œ‹‰Ê‚ğ•\¦‚·‚é
-        Debug.Log("[AIƒeƒXƒg] –â‘è‚Ì¶¬‚ÆŒ`®ŒŸØ‚É¬Œ÷‚µ‚Ü‚µ‚½I");
-        Debug.Log("[AIƒeƒXƒg] –â‘è•¶: " + question.questionText);
+        // 6. çµæœã‚’è¡¨ç¤ºã™ã‚‹
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] å•é¡Œã®ç”Ÿæˆã¨å½¢å¼æ¤œè¨¼ã«æˆåŠŸã—ã¾ã—ãŸï¼");
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] å•é¡Œæ–‡: " + question.questionText);
 
         for (int i = 0; i < question.choices.Length; i++)
         {
-            string mark = i == question.correctIndex ? " © ³‰ğ" : "";
-            Debug.Log($"[AIƒeƒXƒg] ‘I‘ğˆ{i + 1}: {question.choices[i]}{mark}");
+            string mark = i == question.correctIndex ? " â† æ­£è§£" : "";
+            Debug.Log($"[AIãƒ†ã‚¹ãƒˆ] é¸æŠè‚¢{i + 1}: {question.choices[i]}{mark}");
         }
 
-        Debug.Log("[AIƒeƒXƒg] ‰ğà: " + question.explanation);
-        Debug.Log("[AIƒeƒXƒg] ŠÖ˜AŒê”: " + question.relatedTerms.Count);
-        Debug.Log("[AIƒeƒXƒg] “ïˆÕ“x: " + question.difficulty);
-        Debug.Log("[AIƒeƒXƒg] ƒeƒXƒgŠ®—¹");
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] è§£èª¬: " + question.explanation);
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] é–¢é€£èªæ•°: " + question.relatedTerms.Count);
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] é›£æ˜“åº¦: " + question.difficulty);
+        Debug.Log("[AIãƒ†ã‚¹ãƒˆ] ãƒ†ã‚¹ãƒˆå®Œäº†");
     }
 
     private void OnDestroy()

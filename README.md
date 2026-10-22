@@ -29,6 +29,16 @@
 - 完成判定
 - 現在地と次に行う作業
 
+### [AI_SETUP.md](AI_SETUP.md)
+
+AI連携を各自の手元で動かすための手順書です。**そのまま他の人に渡せます。**
+
+- `AIClientSettings.asset` の作り方（クローンしても存在しない理由）
+- OpenAIのAPIキー登録と前払いクレジットの入れ方
+- `GameServer`（本番）と `DirectOpenAI_DevelopmentOnly`（開発用）の使い分け
+- キーの扱いで禁止すること
+- Consoleのログから見る動作確認とよくある詰まり
+
 ### [BUGS.md](BUGS.md)
 
 間違えた記録です。同じ間違いを2回しないために残します。
@@ -201,7 +211,10 @@ POST  Content-Type: application/json
 
 ### 手順
 
-1. Unity Editorで `Tools > Learning Game > Setup Question System` を実行する
+**配布用の手順書は [AI_SETUP.md](AI_SETUP.md) にあります。** 新しく参加した人にはこれを渡してください。
+OpenAIのAPIキー登録からUnity側の設定まで、1枚にまとめてあります。
+
+1. Unity Editorで `Tools > Learning Game > Create AI Client Settings` を実行する
 2. できた `Assets/Konishi/Resources/AIClientSettings.asset` をInspectorで開く
 3. `Mode` を `GameServer` にし、`Server Url` を設定する
 

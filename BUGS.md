@@ -22,6 +22,9 @@
 | 2026-10-15 | 分野ボタンを押してもゲームが始まらない | `SubjectButton.cs` は分野名を保持するだけで、`GameFlowController` を呼び出していない。分野一覧をScroll Viewで動的生成する作りへの移行途中 | 未対応（Knightさんの作業中） | 未解決 |
 | 2026-10-15 | 壊れたコンポーネントを除去したコミット(364ebba)が、`GameFlowController.questionManager` の参照を null にしていた | Missing スクリプトを取り除くと、同じGameObject上の生きた参照まで外れた。**テストを回さずにコミットしたため気づけなかった**（Unityを開いていてbatchmodeが使えず、シーンのGUID検査と再生だけで済ませた。再生は出題画面まで到達しないので露見しなかった） | `Setup Question System` で再割り当て。Test Runnerで141本すべて緑を確認してからコミットした | 解決 |
 | 2026-10-15 | AI生成コードに、通信関連の不具合が4件あった | ①`StartRun` が `GetAwaiter().GetResult()` でブロックしており、サーバー実装にするとメインスレッドが固まる（BUGS.mdに「解決」と書いたが実際は未解決だった） ②投げっぱなしの非同期処理に catch が無く、例外が消える ③攻略を抜けても生成が走り続ける ④生成回数に上限が無く、API料金が青天井 | ①非ブロッキング化し `IsReady` を公開 ②`RunInBackground` で必ずログ ③`CancellationToken` で打ち切り ④`maxGenerationsPerRun`(既定20)で上限 | 解決 |
+| 2026-10-16 | READMEのAI連携手順が、存在しない操作を指していた（`Setup Question System` を実行しても `AIClientSettings.asset` はできない） | 設定アセットを作るメニューは `Create AI Client Settings`（`OpenAISettingsCreator`）で、`Setup Question System` はSceneの参照を直すだけ。メニューを2つに分けたときREADMEを直さなかった。手順どおりにやっても失敗するため、チーム内で「ファイルが見つからない」と探す時間が発生した | READMEを `Create AI Client Settings` に修正し、配布用の手順書 `AI_SETUP.md` を追加した | 解決 |
+| 2026-10-16 | プル後、プロジェクトがコンパイルできなくなった（`QuestionSystemDebugTest.cs(35,30): error CS1009: Unrecognized escape sequence`）。Unityが起動時にSafe Modeに入る | 新規追加された `QuestionSystemDebugTest.cs` がShift-JISで保存されていた。Shift-JISの日本語は2バイト目に `0x5C`（バックスラッシュ）を含むことがあり、UTF-8として読むと文字列リテラル内の不正なエスケープになる。**コミットした本人の環境では既存のキャッシュで動くため気づけない** | `iconv -f CP932 -t UTF-8` で変換（SHIFT_JIS指定だと `0x5C` が `¥` になり `\n` が壊れるのでCP932を使う）。Consoleの日本語が正しく出ることを再生して確認 | 解決 |
+| 2026-10-16 | 画面遷移の2件（タイトルの重なり／分野ボタンが効かない）が、プル後も直っていないことを確認 | `ebb6ef8`「試験してみた」が触ったのはデバッグ用スクリプトとシーンへのその配置のみで、`SubjectButton.cs` と `GameFlowController` の画面制御は未着手。`SubjectButton` は `subjectName` を保持するだけで `GameFlowController` を呼んでいない | 未対応（Knightさん担当）。再生して再現を確認済み | 未解決 |
 
 ---
 
