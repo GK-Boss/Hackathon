@@ -92,6 +92,8 @@ public class RewardIcon : MonoBehaviour
     public void ApplyPoint()
     {
         image.enabled = false;
+        PlayerData.instance.sumPoint += QuizManager.point;
+        PlayerData.instance.SavePoint();
         pointText.text = QuizManager.point.ToString();
         LoadButton.instance.gameObject.SetActive(false);
         backButton.SetActive(true);

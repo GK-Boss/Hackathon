@@ -587,6 +587,7 @@ UnityEngine.GameObject::GetComponentsInternal_Injected
 UnityEngine.GameObject::get_activeInHierarchy_Injected
 UnityEngine.GameObject::get_activeSelf_Injected
 UnityEngine.GameObject::get_layer_Injected
+UnityEngine.GameObject::Find_Injected
 UnityEngine.GameObject::GetComponentInChildren_Injected
 UnityEngine.GameObject::GetComponentInParent_Injected
 UnityEngine.GameObject::GetComponent_Injected
@@ -1890,6 +1891,7 @@ UnityEngine.UISystemProfilerApi::BeginSample
 UnityEngine.UISystemProfilerApi::EndSample
 UnityEngine.UnityConsent.EndUserConsent::GetConsentState_Injected
 UnityEngine.UnityLogWriter::WriteStringToUnityLogImpl_Injected
+UnityEngine.Vector3::Internal_Slerp_Injected
 UnityEngine.VFX.VFXEventAttribute::Internal_Create
 UnityEngine.VFX.VFXEventAttribute::Internal_Destroy
 UnityEngine.VFX.VFXEventAttribute::Internal_InitFromAsset_Injected

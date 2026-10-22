@@ -12,6 +12,8 @@ public class BulletCircle : MonoBehaviour
     [SerializeField] private Transform bulletHole_Parent;
     [SerializeField] private BulletHole bulletHole;
 
+    [SerializeField] private AudioData shotSe;
+
     private Image image;
     private RectTransform circleRectTransform;
 
@@ -76,6 +78,7 @@ public class BulletCircle : MonoBehaviour
 
     public void Shot()
     {
+        AudioManager.instance.PlaySE(shotSe);
         Instantiate(bulletHole, transform.position, Quaternion.identity, bulletHole_Parent).Init(QuizManager.success);
     }
 }

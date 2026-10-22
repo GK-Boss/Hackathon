@@ -58,7 +58,9 @@
           },
           {
             "name": "AudioClip",
-            "scenes": [],
+            "scenes": [
+              "Assets/Common/Scene/CommonScene.unity"
+            ],
             "dependencyType": 0,
             "icon": null
           },
@@ -78,13 +80,17 @@
           },
           {
             "name": "AudioResource",
-            "scenes": [],
-            "dependencyType": 1,
+            "scenes": [
+              "Assets/Common/Scene/CommonScene.unity"
+            ],
+            "dependencyType": 0,
             "icon": null
           },
           {
             "name": "AudioSource",
-            "scenes": [],
+            "scenes": [
+              "Assets/Common/Scene/CommonScene.unity"
+            ],
             "dependencyType": 0,
             "icon": null
           },
