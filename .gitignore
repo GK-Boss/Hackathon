@@ -112,3 +112,6 @@ InitTestScene*.unity*
 # Unityのクラッシュ復旧フォルダ（ローカル専用）
 /[Aa]ssets/_Recovery/
 /[Aa]ssets/_Recovery.meta
+
+# ビルド成果物（提出用。リポジトリには入れない）
+/Build/
