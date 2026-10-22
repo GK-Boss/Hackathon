@@ -13,6 +13,11 @@ public class QuestionUI : MonoBehaviour
     [SerializeField] private ChoiceButtons choiceButtons;
     [SerializeField] private LoadButton loadButton;
 
+    [SerializeField] private GameObject nextButton;
+    [SerializeField] private GameObject backButton;
+    [SerializeField] private GameObject retryButton;
+
+
     private QuestionData questionData;
 
     public void SetData(QuestionData _questionData)
@@ -29,6 +34,10 @@ public class QuestionUI : MonoBehaviour
         rewardIcon.NonActive();
         bulletCircle.NonActive();
         loadButton.ResetUI();
+
+        nextButton.SetActive(false);
+        backButton.SetActive(false);
+        retryButton.SetActive(false);
     }
 
 

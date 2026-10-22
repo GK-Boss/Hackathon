@@ -84,7 +84,7 @@ public class GameFlowController : MonoBehaviour
     public void ShowQuizPanel()
     {
         ShowPanel(PanelState.Quiz);
-        QuizManager.instance.ChangeQuestion();
+        QuizManager.instance.StartRun();
     }
 
     public void ShowFeedbackPanel()

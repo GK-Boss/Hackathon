@@ -1,6 +1,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class QuizManager : MonoBehaviour
@@ -10,9 +11,17 @@ public class QuizManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private QuestionUI questionUI;
 
+    [Header("ReloadEffect")]
+    [SerializeField] private ReloadEffect reloadEffect;
+    [SerializeField] private Transform reloadParent;
+
+    public static bool isRush;
+    public static int reloadNum;
+
     public static bool success = false;
     public static bool giveUp = false;
     public static RewardType reward;
+    public static int point;
 
     // åªç›ÅAâÊñ Ç…ï\é¶ÇµÇƒÇ¢ÇÈñ‚ëË
     private QuestionData currentQuestion;
@@ -43,6 +52,18 @@ public class QuizManager : MonoBehaviour
         instance = this;
     }
 
+    public void StartRun()
+    {
+        isRush = false;
+        reloadNum = 0;
+        giveUp = false;
+        success = false;
+        point = 0;
+
+        Chains.instance.ResetUI();
+
+        ChangeQuestion();
+    }
     /// <summary>
     /// ñ‚ëËÇêÿÇËë÷Ç¶ÇÈÅB
     ///
@@ -126,6 +147,13 @@ public class QuizManager : MonoBehaviour
         {
             isChangingQuestion = false;
         }
+    }
+
+    public void Reload()
+    {
+        Debug.Log("R");
+        Instantiate(reloadEffect, Vector2.zero, Quaternion.identity, reloadParent).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        questionUI.SetData(currentQuestion);
     }
 
     /// <summary>
@@ -257,5 +285,7 @@ public enum RewardType
     Chain_Boss,
     ReloadChallenge,
     Reload,
-    ReloadRush
+    ReloadRush,
+    Fail,
+    GiveUp
 }

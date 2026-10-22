@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class LoadButton : MonoBehaviour
 {
+    static public LoadButton instance;
+
     [SerializeField] private TextMeshProUGUI loadText;
     [SerializeField] private Image bulletImage;
 
@@ -23,11 +25,13 @@ public class LoadButton : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         defaultPos = bulletImage.GetComponent<RectTransform>().anchoredPosition;
     }
 
     public void ResetUI()
     {
+        gameObject.SetActive(true);
         canClick = true;
         lTsF = true;
         StopAllCoroutines();
@@ -55,7 +59,13 @@ public class LoadButton : MonoBehaviour
         if (ChoiceButtons.instance.currentChoiceButton)
             QuizManager.success = ChoiceButtons.instance.currentChoiceButton.trueChoice;
         else
+        {
             QuizManager.giveUp = true;
+            QuizManager.reward = RewardType.GiveUp;
+        }
+
+        if (!QuizManager.success)
+            QuizManager.reward = RewardType.Fail;
 
         bulletCircle.Active();
 
