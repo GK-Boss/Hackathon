@@ -437,7 +437,7 @@
         },
         {
             "id": "bio-001",
-            "subject": "生物学",
+            "subject": "生物",
             "difficulty": 1,
             "questionText": "細胞内でATPを多く合成する細胞小器官は？",
             "choices": [
@@ -472,7 +472,7 @@
         },
         {
             "id": "bio-002",
-            "subject": "生物学",
+            "subject": "生物",
             "difficulty": 1,
             "questionText": "細胞内でタンパク質が合成される場所は？",
             "choices": [
@@ -507,7 +507,7 @@
         },
         {
             "id": "bio-003",
-            "subject": "生物学",
+            "subject": "生物",
             "difficulty": 1,
             "questionText": "DNAの二重らせんでアデニンと塩基対をつくるのは？",
             "choices": [
@@ -542,7 +542,7 @@
         },
         {
             "id": "bio-004",
-            "subject": "生物学",
+            "subject": "生物",
             "difficulty": 1,
             "questionText": "DNAの塩基配列をmRNAに写し取る過程は？",
             "choices": [
@@ -577,7 +577,7 @@
         },
         {
             "id": "bio-005",
-            "subject": "生物学",
+            "subject": "生物",
             "difficulty": 1,
             "questionText": "細胞膜の基本構造をつくる主成分は？",
             "choices": [
@@ -616,7 +616,7 @@
         },
         {
             "id": "bio-006",
-            "subject": "生物学",
+            "subject": "生物",
             "difficulty": 2,
             "questionText": "酵素が作用して変化させる相手の物質を何という？",
             "choices": [
@@ -645,6 +645,204 @@
                 {
                     "term": "タンパク質",
                     "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "eng-001",
+            "subject": "英語",
+            "difficulty": 1,
+            "questionText": "He ___ to school every day. に入る語は？",
+            "choices": [
+                "goes",
+                "go",
+                "going",
+                "gone",
+                "to go",
+                "have gone"
+            ],
+            "correctIndex": 0,
+            "explanation": "主語がHeで現在の習慣を表すので、三人称単数現在のgoesになります。every dayが習慣を示す手がかりです。",
+            "relatedTerms": [
+                {
+                    "term": "三人称単数",
+                    "relevance": 5
+                },
+                {
+                    "term": "現在形",
+                    "relevance": 4
+                },
+                {
+                    "term": "動詞",
+                    "relevance": 3
+                },
+                {
+                    "term": "文法",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "eng-002",
+            "subject": "英語",
+            "difficulty": 1,
+            "questionText": "child の複数形は？",
+            "choices": [
+                "children",
+                "childs",
+                "childes",
+                "childrens",
+                "childies",
+                "child"
+            ],
+            "correctIndex": 0,
+            "explanation": "childは不規則変化の名詞で、複数形はchildrenになります。-sを付ける規則変化ではありません。",
+            "relatedTerms": [
+                {
+                    "term": "複数形",
+                    "relevance": 5
+                },
+                {
+                    "term": "不規則変化",
+                    "relevance": 4
+                },
+                {
+                    "term": "名詞",
+                    "relevance": 3
+                },
+                {
+                    "term": "文法",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "eng-003",
+            "subject": "英語",
+            "difficulty": 1,
+            "questionText": "「受け取る」を意味する動詞は？",
+            "choices": [
+                "receive",
+                "reject",
+                "remove",
+                "reduce",
+                "repeat",
+                "replace"
+            ],
+            "correctIndex": 0,
+            "explanation": "receiveが「受け取る」です。rejectは拒否する、removeは取り除く、reduceは減らすという意味です。",
+            "relatedTerms": [
+                {
+                    "term": "語彙",
+                    "relevance": 5
+                },
+                {
+                    "term": "動詞",
+                    "relevance": 4
+                },
+                {
+                    "term": "接頭辞re",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "eng-004",
+            "subject": "英語",
+            "difficulty": 2,
+            "questionText": "I am interested ___ science. に入る前置詞は？",
+            "choices": [
+                "in",
+                "on",
+                "at",
+                "for",
+                "with",
+                "to"
+            ],
+            "correctIndex": 0,
+            "explanation": "be interested in で「〜に興味がある」という決まった形です。前置詞は組み合わせで覚えます。",
+            "relatedTerms": [
+                {
+                    "term": "前置詞",
+                    "relevance": 5
+                },
+                {
+                    "term": "熟語",
+                    "relevance": 4
+                },
+                {
+                    "term": "文法",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "eng-005",
+            "subject": "英語",
+            "difficulty": 2,
+            "questionText": "good の比較級は？",
+            "choices": [
+                "better",
+                "gooder",
+                "goodest",
+                "more good",
+                "best",
+                "well"
+            ],
+            "correctIndex": 0,
+            "explanation": "goodは不規則変化で、比較級がbetter、最上級がbestになります。bestは最上級なので比較級ではありません。",
+            "relatedTerms": [
+                {
+                    "term": "比較級",
+                    "relevance": 5
+                },
+                {
+                    "term": "不規則変化",
+                    "relevance": 4
+                },
+                {
+                    "term": "形容詞",
+                    "relevance": 3
+                },
+                {
+                    "term": "文法",
+                    "relevance": 2
+                }
+            ],
+            "verified": false
+        },
+        {
+            "id": "eng-006",
+            "subject": "英語",
+            "difficulty": 1,
+            "questionText": "「薬」を意味する英単語は？",
+            "choices": [
+                "medicine",
+                "medium",
+                "meditation",
+                "mediation",
+                "mechanic",
+                "merchant"
+            ],
+            "correctIndex": 0,
+            "explanation": "medicineが「薬」です。綴りの似たmediumは媒体、meditationは瞑想という別の意味になります。",
+            "relatedTerms": [
+                {
+                    "term": "語彙",
+                    "relevance": 5
+                },
+                {
+                    "term": "名詞",
+                    "relevance": 3
+                },
+                {
+                    "term": "医療英語",
+                    "relevance": 3
                 }
             ],
             "verified": false
