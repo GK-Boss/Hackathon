@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class KnightTest : MonoBehaviour
 {
+    [SerializeField] private QuizManager quizManager;
+    
     [SerializeField] private GameObject prefab;
     [SerializeField] private Transform parent;
 
-    [SerializeField] private AudioData bgm1;
-    [SerializeField] private AudioData bgm2;
+    [SerializeField] private BulletCircle bc;
 
     private void Update()
     {
@@ -17,18 +18,7 @@ public class KnightTest : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            //ChoiceButtons.instance.ActiveButtons();
+            quizManager.ChangeQuestion();
         }
-
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            AudioManager.instance.ChangeBGM(bgm1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            AudioManager.instance.ChangeBGM(bgm2);
-        }
-
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ChoiceButton : MonoBehaviour
 {
@@ -21,6 +21,10 @@ public class ChoiceButton : MonoBehaviour
     [SerializeField] private AnimationCurve thirdMoveCurve;
     [SerializeField] private float thirdMoveSeconds = 0.2f;
 
+    [SerializeField] private Vector2 fourthOffset;
+    [SerializeField] private AnimationCurve fourthMoveCurve;
+    [SerializeField] private float fourthMoveSeconds = 0.5f;
+
     [HideInInspector] public bool trueChoice;
 
     private Vector2 pos;
@@ -39,6 +43,9 @@ public class ChoiceButton : MonoBehaviour
     {
         text.text = _text;
         trueChoice = isTrue;
+
+        imageTransform.anchoredPosition = pos;
+        textTransform.anchoredPosition = pos + textOffset;
     }
     public void Active()
     {
@@ -133,6 +140,36 @@ public class ChoiceButton : MonoBehaviour
         textTransform.anchoredPosition = pos + thirdOffset + textOffset;
         moveCoroutine = null;
     }
+
+    public IEnumerator FourthMove()
+    {
+        float progress = 0f;
+
+        Vector2 firstPos_Image = imageTransform.anchoredPosition;
+        Vector2 firstPos_Text = textTransform.anchoredPosition - textOffset;
+        while (progress < fourthMoveSeconds)
+        {
+            progress += Time.deltaTime;
+            float t = Mathf.Clamp01(progress / fourthMoveSeconds);
+            float curveValue = fourthMoveCurve.Evaluate(t);
+            imageTransform.anchoredPosition = Vector2.Lerp(firstPos_Image, pos + fourthOffset, curveValue);
+            textTransform.anchoredPosition = Vector2.Lerp(firstPos_Text + textOffset, pos + fourthOffset + textOffset, curveValue);
+            image.color = new Color(1f, 1f, 1f, 1 - t);
+            text.color = new Color(1f, 1f, 1f, 1 - t);
+            yield return null;
+        }
+        imageTransform.anchoredPosition = pos + fourthOffset;
+        textTransform.anchoredPosition = pos + fourthOffset + textOffset;
+        image.color = new Color(1f, 1f, 1f, 0f);
+        text.color = new Color(1f, 1f, 1f, 0f);
+        moveCoroutine = null;
+    }
+
+    public void ResetPos()
+    {
+
+    }
+
     public void OnClick()
     {
         if (!canSelect) return;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameFlowController : MonoBehaviour
 {
-    static public GameFlowController instance { get; private set; }
+    static public GameFlowController instance;
 
     [Header("Game Logic")]
     [SerializeField] private ChainManager chainManager;
@@ -21,6 +21,10 @@ public class GameFlowController : MonoBehaviour
     [SerializeField] private QuestionUI questionUI;
     [SerializeField] private FeedbackUI feedbackUI;
     [SerializeField] private ResultUI resultUI;
+
+    [Header("BGM")]
+    [SerializeField] private AudioData selectBGM;
+    [SerializeField] private AudioData quizBGM;
 
     private string selectedSubject;
 
@@ -55,6 +59,8 @@ public class GameFlowController : MonoBehaviour
         quizPanel.SetActive(state == PanelState.Quiz);
         feedbackPanel.SetActive(state == PanelState.Feedback);
         resultPanel.SetActive(state == PanelState.Result);
+
+        AudioManager.instance.ChangeBGM(state == PanelState.Quiz ? quizBGM : selectBGM);
     }
 
     public void ShowModeSelectPanel()
@@ -78,15 +84,7 @@ public class GameFlowController : MonoBehaviour
     public void ShowQuizPanel()
     {
         ShowPanel(PanelState.Quiz);
-        // 問題の取り出しはQuestionManagerに任せる。AIやDBの都合はここに書かない。
-        currentQuestion = questionManager.GetNextQuestion();
-        if (currentQuestion == null)
-        {
-            ShowResult("問題がありません", "出題できる問題が見つかりませんでした。", 0);
-            return;
-        }
-
-        questionUI.SetData(currentQuestion);
+        QuizManager.instance.StartRun();
     }
 
     public void ShowFeedbackPanel()

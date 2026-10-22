@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ccad88d56bf08bd43b87ad28d3cab7be
+guid: 1c32f1d203374774a8860d47b4373906
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1463881641717306102
-    second: Gemini_Generated_Image_wnpouxwnpouxwnpo_transparent_transparent_transparent_0
+      213: 4527199249999255525
+    second: Gemini_Generated_Image_t5tnf5t5tnf5t5tn_transparent_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,17 +109,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_wnpouxwnpouxwnpo_transparent_transparent_transparent_0
+      name: Gemini_Generated_Image_t5tnf5t5tnf5t5tn_transparent_0
       rect:
         serializedVersion: 2
-        x: 281
-        y: 16
-        width: 846
-        height: 679
+        x: 122
+        y: 0
+        width: 1158
+        height: 730
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6f296cfd890c05410800000000000000
-      internalID: 1463881641717306102
+      spriteID: 5e7de935bb7d3de30800000000000000
+      internalID: 4527199249999255525
       vertices: []
       indices: 
       edges: []
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_wnpouxwnpouxwnpo_transparent_transparent_transparent_0: 1463881641717306102
+      Gemini_Generated_Image_t5tnf5t5tnf5t5tn_transparent_0: 4527199249999255525
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

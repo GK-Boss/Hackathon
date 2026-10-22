@@ -25,6 +25,8 @@ using UnityEngine;
 /// </summary>
 public class QuestionManager : MonoBehaviour
 {
+    static public QuestionManager instance;
+
     [Header("出題範囲")]
     [Tooltip("人が目視検証した問題だけを出題する。デモ本番ではONにする。")]
     [SerializeField] private bool verifiedOnly = false;
@@ -97,6 +99,8 @@ public class QuestionManager : MonoBehaviour
     public void Initialize()
     {
         if (initialized) return;
+
+        instance = this;
 
         var settings = AIClientSettings.LoadOrNull();
         var client = settings != null ? settings.CreateClient() : null;
