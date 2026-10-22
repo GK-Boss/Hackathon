@@ -70,6 +70,9 @@ public class QuestionManager : MonoBehaviour
     /// 出題候補の手元のコピー。GetNextQuestion は通信を待てないので、ここから選ぶ。
     private List<QuestionData> candidates = new List<QuestionData>();
 
+    /// 出題できる分野の一覧。分野ボタンの生成元になる。
+    private readonly List<string> availableSubjects = new List<string>();
+
     /// 直前に返した問題。
     public QuestionData Current { get; private set; }
 
@@ -84,6 +87,19 @@ public class QuestionManager : MonoBehaviour
     ///         そのときは「読み込み中」を出すなどして、GetNextQuestion を待ってください。
     /// </summary>
     public bool IsReady => candidatesLoaded;
+
+    /// <summary>
+    /// 出題できる分野の一覧。「問題が1問以上ある分野」だけが入る。
+    ///
+    /// Tomo注: 分野ボタンはここから作ってください。
+    ///         画面側に分野名を手で並べると、問題データと食い違ったときに
+    ///         「選んでも他の分野の問題が出る」「押しても何も起きない」状態になります。
+    ///         実際に「生物学」と「生物」で食い違ったことがあります。
+    /// </summary>
+    public IReadOnlyList<string> AvailableSubjects => availableSubjects;
+
+    /// 分野一覧の読み込みが終わったか。終わるまで AvailableSubjects は空。
+    public bool SubjectsLoaded { get; private set; }
 
     /// そのプレイ中に触れた知識（語 → 回数）。結果画面などで見せたいとき用。
     public Dictionary<string, int> KnowledgeCounts => knowledgeTracker.GetKnowledgeCounts();
@@ -128,7 +144,26 @@ public class QuestionManager : MonoBehaviour
 
         initialized = true;
 
-        RunInBackground(this.repository.InitializeAsync(), "問題データの初期化");
+        RunInBackground(LoadSubjectsAsync(), "分野一覧の読み込み");
+    }
+
+    /// <summary>
+    /// 出題できる分野を数え上げる。問題が1問も無い分野は入れない。
+    /// verifiedOnly がONのときは、人が確認済みの問題がある分野だけになる。
+    /// </summary>
+    private async Task LoadSubjectsAsync()
+    {
+        await repository.InitializeAsync();
+
+        availableSubjects.Clear();
+
+        foreach (string subject in await repository.GetSubjectsAsync())
+        {
+            var questions = await repository.GetQuestionsBySubjectAsync(subject, verifiedOnly);
+            if (questions.Count > 0) availableSubjects.Add(subject);
+        }
+
+        SubjectsLoaded = true;
     }
 
     // ==================================================================

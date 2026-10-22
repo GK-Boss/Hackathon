@@ -155,6 +155,41 @@ public class QuestionManagerTests
         }
     }
 
+    // ---- 分野一覧（分野ボタンの生成元） ----
+
+    [Test]
+    public void 出題できる分野の一覧が取れる()
+    {
+        // Tomo注: 分野ボタンはここから作られます。
+        //         手入力の配列と問題データが食い違う事故を防ぐための入口です。
+        Assert.IsTrue(manager.SubjectsLoaded, "分野一覧の読み込みが終わっていません。");
+        Assert.IsNotEmpty(manager.AvailableSubjects, "出題できる分野が1つもありません。");
+    }
+
+    [Test]
+    public void 分野一覧には問題がある分野だけが入る()
+    {
+        foreach (string subject in manager.AvailableSubjects)
+        {
+            int count = repository.GetQuestionsBySubjectAsync(subject).GetAwaiter().GetResult().Count;
+            Assert.Greater(count, 0, "問題が0問の分野が一覧に入っています: " + subject);
+        }
+    }
+
+    [Test]
+    public void 一覧のどの分野を選んでも問題が出る()
+    {
+        foreach (string subject in manager.AvailableSubjects)
+        {
+            manager.StartRun(subject);
+            var question = manager.GetNextQuestion();
+
+            Assert.IsNotNull(question, "分野「" + subject + "」で問題が出ませんでした。");
+            Assert.AreEqual(subject, question.subject,
+                "分野「" + subject + "」を選んだのに、別の分野の問題が出ました: " + question.subject);
+        }
+    }
+
     // ---- 知識の記録 ----
 
     [Test]
