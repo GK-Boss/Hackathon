@@ -1785,7 +1785,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 306777209}
         m_TargetAssemblyTypeName: GameFlowController, Assembly-CSharp
-        m_MethodName: ShowSubjectSelect
+        m_MethodName: ShowSubjectSelectPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4758,7 +4758,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 64, y: 570.99994}
+  m_AnchoredPosition: {x: -320.05173, y: 854.96545}
   m_SizeDelta: {x: 1158, y: 730}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1268326723

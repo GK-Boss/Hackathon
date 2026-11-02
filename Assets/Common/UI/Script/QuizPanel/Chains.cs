@@ -29,7 +29,7 @@ public class Chains : MonoBehaviour
         bool success = true;
         while (success)
         {
-            Instantiate(chainPrefab_Rare, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform);
+            Instantiate(chainPrefab_Rare, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform).SetChainType(RewardType.Chain_Rare);
             chainCount++;
             yield return new WaitForSeconds(0.3f);
             success = Random.value < 0.5f;
