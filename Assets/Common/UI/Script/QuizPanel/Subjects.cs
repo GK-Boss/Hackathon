@@ -18,6 +18,8 @@ using UnityEngine;
 /// </summary>
 public class Subjects : MonoBehaviour
 {
+    static public Subjects instance;
+
     [Tooltip("表示したい分野と、その順番。空なら問題データにある分野をすべて表示する。" +
              "ここに書いても、問題が無い分野はボタンに出ない。")]
     [SerializeField] private string[] subjectNames;
@@ -28,11 +30,19 @@ public class Subjects : MonoBehaviour
     [Tooltip("問題データの読み込みを待つ最大フレーム数。")]
     [SerializeField] private int maxWaitFrames = 600;
 
+    private void Awake()
+    {
+        instance = this;
+    }
     private void OnEnable()
     {
         StartCoroutine(GenerateSubject());
     }
 
+    public void SetSubjectNames(string[] subjectNames)
+    {
+        this.subjectNames = subjectNames;
+    }
     private IEnumerator GenerateSubject()
     {
         foreach (Transform child in content)

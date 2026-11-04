@@ -16,20 +16,20 @@ public class Chains : MonoBehaviour
     }
     public void GenerateChain_Normal(Vector3 pos)
     {
-        Instantiate(chainPrefab_Normal, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform);
+        Instantiate(chainPrefab_Normal, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform).SetChainType(RewardType.Chain_Normal);
         chainCount++;
     }
 
     public IEnumerator GenerateChain_Rare(Vector3 pos)
     {
-        Instantiate(chainPrefab_Rare, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform);
+        Instantiate(chainPrefab_Rare, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform).SetChainType(RewardType.Chain_Rare);
         chainCount++;
         yield return new WaitForSeconds(0.3f);
 
         bool success = true;
         while (success)
         {
-            Instantiate(chainPrefab_Rare, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform);
+            Instantiate(chainPrefab_Rare, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)), transform).SetChainType(RewardType.Chain_Rare);
             chainCount++;
             yield return new WaitForSeconds(0.3f);
             success = Random.value < 0.5f;

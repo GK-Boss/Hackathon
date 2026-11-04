@@ -13,9 +13,11 @@ public class RewardIcon : MonoBehaviour
     [SerializeField] private GameObject backButton;
     [SerializeField] private GameObject retryButton;
 
+    private RectTransform rt;
     private Image image;
     private void Awake()
     {
+        rt = GetComponent<RectTransform>();
         image = GetComponent<Image>();
     }
     public void Active()
@@ -29,21 +31,33 @@ public class RewardIcon : MonoBehaviour
         {
             case RewardType.Chain_Normal:
                 image.sprite = sprites[0];
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 846);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 679);
                 break;
             case RewardType.Chain_Rare:
                 image.sprite = sprites[1];
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 846);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 679);
                 break;
             case RewardType.Chain_Boss:
                 image.sprite = sprites[2];
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 846);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 679);
                 break;
             case RewardType.ReloadChallenge:
                 image.sprite = sprites[3];
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1380);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 752);
                 break;
             case RewardType.Reload:
                 image.sprite = sprites[4];
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1158);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 730);
                 break;
             case RewardType.ReloadRush:
                 image.sprite = sprites[5];
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1158);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 730);
                 break;
             //case RewardType.Fail:
             //    image.enabled = false;

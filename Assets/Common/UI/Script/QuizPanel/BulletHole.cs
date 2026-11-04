@@ -32,9 +32,6 @@ public class BulletHole : MonoBehaviour
             return;
         }
 
-        //StartCoroutine(Success()); // Debug
-        //return;
-
         if (success)
             StartCoroutine(Success());
         else

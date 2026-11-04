@@ -12,6 +12,7 @@ public class GameFlowController : MonoBehaviour
 
     [Header("Scene UI")]
     [SerializeField] private GameObject modeSelectPanel;
+    [SerializeField] private GameObject gradeSelectPanel;
     [SerializeField] private GameObject subjectSelectPanel;
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject settingsPanel;
@@ -27,15 +28,13 @@ public class GameFlowController : MonoBehaviour
     [SerializeField] private AudioData quizBGM;
 
     private string selectedSubject;
-
-    /// いま表示している問題。QuestionManagerから受け取ったものを保持する。
-    private QuestionData currentQuestion;
+    private int selectedGrade;
 
     private void Start() => ShowModeSelectPanel();
 
-    public void SelectUnity() => StartGame("Unity");
-    public void SelectGeneral() => StartGame("一般教養");
-    public void SelectProgramming() => StartGame("プログラミング");
+    //public void SelectUnity() => StartGame("Unity");
+    //public void SelectGeneral() => StartGame("一般教養");
+    //public void SelectProgramming() => StartGame("プログラミング");
 
     private void Awake()
     {
@@ -55,6 +54,7 @@ public class GameFlowController : MonoBehaviour
         modeSelectPanel.SetActive(state == PanelState.ModeSelect);
         shopPanel.SetActive(state == PanelState.Shop);
         settingsPanel.SetActive(state == PanelState.Settings);
+        gradeSelectPanel.SetActive(state == PanelState.GradeSelect);
         subjectSelectPanel.SetActive(state == PanelState.SubjectSelect);
         quizPanel.SetActive(state == PanelState.Quiz);
         feedbackPanel.SetActive(state == PanelState.Feedback);
@@ -76,7 +76,12 @@ public class GameFlowController : MonoBehaviour
     {
         ShowPanel(PanelState.Settings);
     }
-    public void ShowSubjectSelect()
+
+    public void ShowGradeSelectPanel()
+    {
+        ShowPanel(PanelState.GradeSelect);
+    }
+    public void ShowSubjectSelectPanel()
     {
         ShowPanel(PanelState.SubjectSelect);
     }
@@ -98,59 +103,6 @@ public class GameFlowController : MonoBehaviour
     }
 
     #endregion
-    private void Answer(int choice)
-    {
-        var question = currentQuestion;
-        bool isCorrect = choice == question.correctIndex;
-
-        // 正解・不正解にかかわらず「この問題に触れた」ことを記録する（ボス問題の材料になる）
-        questionManager.RegisterQuestionAnswered(question, isCorrect);
-
-        if (!isCorrect)
-        {
-            ShowResult("不正解…", "Chainはすべて失われました。\n正解: " + question.choices[question.correctIndex], 0);
-            return;
-        }
-
-        chainManager.AddCorrectAnswer();
-        quizPanel.SetActive(false);
-        feedbackUI.Show("正解！  Chain + 1", "関連ワード：" + DescribeTerms(question), ShowQuizPanel);
-        feedbackPanel.SetActive(true);
-    }
-
-    /// <summary>
-    /// Reloadで同じ問題に再挑戦するときに呼ぶ。
-    /// Tomo注: Reload演出とつなぐときはここを使ってください。知識の二重カウントを防ぎます。
-    /// </summary>
-    public void RetryCurrentQuestion()
-    {
-        if (currentQuestion == null) return;
-
-        questionManager.RegisterQuestionReloaded(currentQuestion);
-        questionUI.SetData(currentQuestion);
-    }
-
-    /// 関連語をフィードバック画面に出す形にする。
-    private static string DescribeTerms(QuestionData question)
-    {
-        var names = question.TermNames();
-        return names.Count == 0 ? "—" : string.Join("、", names);
-    }
-
-    private void AdmitUnknown()
-    {
-        var question = currentQuestion;
-        int score = scoreCalculator.CalculateScore(chainManager.CurrentChain);
-        ShowResult("わからないを認めた！", "Chain " + chainManager.CurrentChain + " → スコア " + score + "\n\n" + question.explanation, score);
-    }
-
-    private void ShowResult(string title, string detail, int score)
-    {
-        quizPanel.SetActive(false);
-        feedbackPanel.SetActive(false);
-        resultUI.Show(title, detail, score, ShowSubjectSelect);
-        resultPanel.SetActive(true);
-    }
 }
 
 [Serializable]
@@ -159,6 +111,7 @@ public enum PanelState
     ModeSelect,
     Shop,
     Settings,
+    GradeSelect,
     SubjectSelect,
     Quiz,
     Feedback,
