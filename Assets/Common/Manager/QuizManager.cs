@@ -62,6 +62,9 @@ public class QuizManager : MonoBehaviour
 
         Chains.instance.ResetUI();
 
+        reward = RewardManager.instance.SelectRewardType();
+        ChangeQuestion();
+        reward = RewardManager.instance.SelectRewardType();
         ChangeQuestion();
     }
     /// <summary>

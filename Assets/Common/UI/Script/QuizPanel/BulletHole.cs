@@ -26,7 +26,6 @@ public class BulletHole : MonoBehaviour
 
         if (QuizManager.giveUp)
         {
-            Debug.Log("G");
             QuizManager.giveUp = false;
             StartCoroutine(GiveUp());
             return;

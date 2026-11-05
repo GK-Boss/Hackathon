@@ -7,6 +7,7 @@ public class RushIcon : MonoBehaviour
     private void Start()
     {
         image = GetComponent<Image>();
+        image.enabled = false;
     }
     private void Update()
     {

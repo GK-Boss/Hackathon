@@ -64,8 +64,10 @@ public class LoadButton : MonoBehaviour
             QuizManager.reward = RewardType.GiveUp;
         }
 
-        if (!QuizManager.success)
+        if (!QuizManager.success && QuizManager.reloadNum <= 0)
+        {
             QuizManager.reward = RewardType.Fail;
+        }
 
         bulletCircle.Active();
 

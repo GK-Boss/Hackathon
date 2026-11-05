@@ -13,7 +13,7 @@ public class PlayerData : MonoBehaviour
     }
     private void Start()
     {
-        playerGrade = PlayerPrefs.GetInt("Grade");
+        playerGrade = PlayerPrefs.GetInt("Grade", 1);
         sumPoint = PlayerPrefs.GetInt("Point");
     }
     public void ChangeGrade(int newGrade)
