@@ -1,0 +1,7 @@
+project_id = "knovex"
+
+[functions.get-question]
+verify_jwt = false
+
+[functions.submit-answer]
+verify_jwt = false
