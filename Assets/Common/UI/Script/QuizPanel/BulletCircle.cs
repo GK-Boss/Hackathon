@@ -8,6 +8,7 @@ public class BulletCircle : MonoBehaviour
     [SerializeField] private float firstScale;
 
     [SerializeField] private Vector2[] movePoints;
+    private int pointIndex;
 
     [SerializeField] private Transform bulletHole_Parent;
     [SerializeField] private BulletHole bulletHole;
@@ -62,15 +63,21 @@ public class BulletCircle : MonoBehaviour
     {
         if (!move) return;
 
-        if (moveProgress < 0.1f)
+        if (moveProgress < 0.3f)
         {
-            circleRectTransform.anchoredPosition = Vector3.Slerp(pastPoint, nextPoint, moveProgress / 0.3f);
+            circleRectTransform.anchoredPosition = Vector3.Lerp(pastPoint, nextPoint, moveProgress / 0.5f);
             moveProgress += Time.deltaTime;
         }
         else
         {
             pastPoint = circleRectTransform.anchoredPosition;
-            nextPoint = movePoints[Random.Range(0, movePoints.Length)];
+            pointIndex++;
+            if (pointIndex >= movePoints.Length)
+            {
+                pointIndex = 0;
+            }
+            nextPoint = movePoints[pointIndex];
+            //nextPoint = movePoints[Random.Range(0, movePoints.Length)];
 
             moveProgress = 0;
         }
