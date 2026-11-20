@@ -121,11 +121,18 @@ public class QuestionManager : MonoBehaviour
         var settings = AIClientSettings.LoadOrNull();
         var client = settings != null ? settings.CreateClient() : null;
 
+        //Configure(
+        //    new LocalJsonQuestionRepository(),
+        //    new QuestionSelector(),
+        //    new AIQuestionGenerator(client, verboseLog),
+        //    new KnowledgeTracker());
         Configure(
-            new LocalJsonQuestionRepository(),
-            new QuestionSelector(),
-            new AIQuestionGenerator(client, verboseLog),
-            new KnowledgeTracker());
+        new HybridQuestionRepository(
+        new LocalJsonQuestionRepository(),
+        settings),
+        new QuestionSelector(),
+        new AIQuestionGenerator(client, verboseLog),
+        new KnowledgeTracker());
     }
 
     /// <summary>

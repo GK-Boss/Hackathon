@@ -38,6 +38,9 @@ public class AIClientSettings : ScriptableObject
 
     public string saveQuestionUrl = "";
 
+    [Tooltip("Supabaseから検証済み問題を取得するEdge Function URL")]
+    public string getQuestionsUrl = "";
+
     [Header("開発用：OpenAI直叩き（ビルドに含めないこと）")]
     [Tooltip("開発中だけ使う。ここにキーを入れたままビルドしないこと。")]
     public string openAIApiKey = "";
