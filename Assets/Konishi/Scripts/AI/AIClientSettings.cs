@@ -36,6 +36,8 @@ public class AIClientSettings : ScriptableObject
     [Tooltip("サーバー側で発行するクライアント用トークン。OpenAIのキーではない。")]
     public string serverToken = "";
 
+    public string saveQuestionUrl = "";
+
     [Header("開発用：OpenAI直叩き（ビルドに含めないこと）")]
     [Tooltip("開発中だけ使う。ここにキーを入れたままビルドしないこと。")]
     public string openAIApiKey = "";

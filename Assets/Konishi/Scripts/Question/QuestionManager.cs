@@ -298,7 +298,22 @@ public class QuestionManager : MonoBehaviour
         if (boss == null) return null;
 
         // 企画書どおり、使う・使わないにかかわらず保存する
+        //await repository.SaveQuestionAsync(boss);
+        //return boss;
         await repository.SaveQuestionAsync(boss);
+
+        var settings = AIClientSettings.LoadOrNull();
+
+        bool saved = await SupabaseQuestionSaver.SaveAsync(
+            boss,
+            settings
+        );
+
+        if (!saved)
+        {
+            Debug.LogWarning("[Question] ボス問題のSupabase保存に失敗しました。");
+        }
+
         return boss;
     }
 
@@ -426,7 +441,28 @@ public class QuestionManager : MonoBehaviour
             if (cancellationToken.IsCancellationRequested) return;
 
             // 企画書どおり、今回使わなくてもDBに保存する
+            //await repository.SaveQuestionAsync(generated);
+            //candidates.Add(generated);
+            //pregenerated = generated;
+
+            // まず既存のローカル保存
             await repository.SaveQuestionAsync(generated);
+
+            // Supabaseにも保存
+            var settings = AIClientSettings.LoadOrNull();
+
+            bool saved = await SupabaseQuestionSaver.SaveAsync(
+                generated,
+                settings
+            );
+
+            if (!saved)
+            {
+                Debug.LogWarning(
+                    "[Question] Supabaseへの保存に失敗しました。ローカル保存は維持します。");
+            }
+
+            // 保存結果にかかわらずゲーム内では使用する
             candidates.Add(generated);
             pregenerated = generated;
         }
